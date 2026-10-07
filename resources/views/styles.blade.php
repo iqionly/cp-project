@@ -21,4 +21,8 @@
 <link rel="stylesheet" href="{{ url('dist/css/adminlte.css') }}" />
 <!--end::Required Plugin(AdminLTE)-->
 
+<!--begin::Required Plugin(CKEditor)-->
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/48.5.2/ckeditor5.css" />
+<!--end::Required Plugin(CKEditor)-->
+
 @stack('styles')

@@ -5,8 +5,10 @@ namespace App\Models\MasterData;
 use App\Models\Traits\FormatDate;
 use App\Models\Traits\SerializeDate;
 use App\Models\User;
+use Database\Factories\MasterData\MemberFactory;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
@@ -29,6 +31,7 @@ use Illuminate\Support\Carbon;
     'emergency_person',
     'emergency_phone_number'
 ])]
+#[UseFactory(MemberFactory::class)]
 class Member extends Model
 {
     use HasTimestamps, SoftDeletes, HasFactory, FormatDate;

@@ -11,20 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('member_dues', function (Blueprint $table) {
+        Schema::create('member_payments', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedBigInteger('event_due_id');
             $table->unsignedBigInteger('member_id');
+            $table->unsignedBigInteger('event_due_id');
 
-            $table->unsignedInteger('dues_payed')->default(0);
+            $table->float('payed')->default(0);
 
             $table->date('date_payed_at');
+            $table->timestamp('reviewed_at')->nullable();
+            $table->timestamp('approved_at')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->softDeletes();
 
-            $table->foreign('event_due_id')->references('id')->on('event_due_id');
             $table->foreign('member_id')->references('id')->on('members');
+            $table->foreign('event_due_id')->references('id')->on('event_dues');
         });
     }
 
@@ -33,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('member_dues');
+        Schema::dropIfExists('member_payments');
     }
 };

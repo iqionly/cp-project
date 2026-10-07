@@ -9,6 +9,11 @@
 <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
 <script src="{{ url('dist/js/adminlte.js') }}"></script>
 <!--end::Required Plugin(AdminLTE)-->
+
+<!-- start:Required Plugin(CKEditor) -->
+<script src="https://cdn.ckeditor.com/ckeditor5/48.5.2/ckeditor5.umd.js"></script>
+<!-- end:Required Plugin(CKEditor) -->
+
 <!--begin::OverlayScrollbars Configure-->
 <script>
     const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';

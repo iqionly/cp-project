@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MasterData\MemberController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\Publics\HomeController;
 use App\Http\Controllers\Securities\AuthenticationController;
 use Illuminate\Routing\Router;
@@ -21,7 +22,13 @@ Route::middleware(['auth'])->group(function(Router $router) {
     Route::prefix('/master-data')->group(function(Router $router) {
         $router->get('/member', [MemberController::class, 'index'])->name('master-data.member.list');
         $router->match(['get', 'put'], '/member/{member}/edit', [MemberController::class, 'edit'])->name('master-data.member.edit');
-        $router->delete('/member/{member}/delete', [MemberController::class, 'delete'])->name('master-data.member.delete');
+        $router->delete('/member/{member}', [MemberController::class, 'delete'])->name('master-data.member.delete');
+    });
+
+    Route::prefix('/post')->group(function(Router $router) {
+        $router->get('/', [PostController::class, 'index'])->name('post.index');
+        $router->match(['get', 'put'], '/{post}/edit', [PostController::class, 'edit'])->name('post.edit');
+        $router->delete('/{post}', [PostController::class, 'delete'])->name('post.delete');
     });
 });
 

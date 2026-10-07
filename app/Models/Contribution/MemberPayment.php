@@ -4,7 +4,7 @@ namespace App\Models\Contribution;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MemberDue extends Model
+class MemberPayment extends Model
 {
     //
 }

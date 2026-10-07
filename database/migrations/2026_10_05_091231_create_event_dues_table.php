@@ -14,17 +14,16 @@ return new class extends Migration
         Schema::create('event_dues', function (Blueprint $table) {
             $table->id();
 
-            $table->string('name');
+            $table->string('name', 64);
             $table->text('description')->nullable();
 
             $table->float('minimum_pay')->default(0);
 
-            $table->dateTime('publish_at')->nullable();
+            $table->dateTime('published_at')->nullable();
             $table->dateTime('closed_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('due_type_id')->references('id')->on('due_types');
         });
     }
 
