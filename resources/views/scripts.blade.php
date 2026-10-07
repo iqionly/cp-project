@@ -10,9 +10,9 @@
 <script src="{{ url('dist/js/adminlte.js') }}"></script>
 <!--end::Required Plugin(AdminLTE)-->
 
-<!-- start:Required Plugin(CKEditor) -->
-<script src="https://cdn.ckeditor.com/ckeditor5/48.5.2/ckeditor5.umd.js"></script>
-<!-- end:Required Plugin(CKEditor) -->
+<!-- start:Required Plugin(Quill) -->
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+<!-- end:Required Plugin(Quill) -->
 
 <!--begin::OverlayScrollbars Configure-->
 <script>

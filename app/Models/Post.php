@@ -14,6 +14,13 @@ class Post extends Model
 {
     use HasFactory;
 
+    protected function casts(): array
+    {
+        return [
+            'path_images' => 'array',
+        ];
+    }
+
     public function isReviewed(): Attribute
     {
         return new Attribute(

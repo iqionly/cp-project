@@ -21,8 +21,8 @@
 <link rel="stylesheet" href="{{ url('dist/css/adminlte.css') }}" />
 <!--end::Required Plugin(AdminLTE)-->
 
-<!--begin::Required Plugin(CKEditor)-->
-<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/48.5.2/ckeditor5.css" />
-<!--end::Required Plugin(CKEditor)-->
+<!--begin::Required Plugin(Quill)-->
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+<!--end::Required Plugin(Quill)-->
 
 @stack('styles')

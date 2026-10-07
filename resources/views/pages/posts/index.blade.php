@@ -53,13 +53,13 @@
                                     <td>{{ $post->created_at }}</td>
                                     <td>{{ $post->updated_at }}</td>
                                     <td>
-                                        <form action="{{ route('master-data.member.delete', [$post->id]) }}"
+                                        <form action="{{ route('post.delete', [$post->id]) }}"
                                             method="post">
                                             @method('DELETE')
                                             @csrf
                                             <input type="submit" class="btn btn-danger btn-sm m-1" value="DELETE" />
                                         </form>
-                                        <a href="{{ route('master-data.member.edit', [$post->id]) }}"
+                                        <a href="{{ route('post.edit', [$post->id]) }}"
                                             class="btn btn-info btn-sm m-1">EDIT</a>
                                     </td>
                                 </tr>

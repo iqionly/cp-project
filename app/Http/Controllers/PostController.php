@@ -32,7 +32,7 @@ class PostController extends Controller
             $post->save();
         }
 
-        return view('pages.masterdata.member_edit', [
+        return view('pages.posts.edit', [
             'data' => $post,
         ]);
     }

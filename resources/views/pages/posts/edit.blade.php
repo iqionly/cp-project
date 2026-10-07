@@ -7,16 +7,16 @@
         <div class="col-md-12">
             <div class="card mb-4">
                 <div class="card-header">
-                    <h3 class="card-title">Edit Member - {{ $data->full_name }} - ( {{ $data->member_code}} )</h3>
+                    <h3 class="card-title">Edit Post</h3>
                 </div>
                 <!-- /.card-header -->
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     @method('put')
                     @csrf
                     <div class="card-body">
                         <div class="row">
 
-                            <div class="col-md-6 mb-3">
+                            <div class="col-12 mb-3">
                                 <label for="title" class="form-label">Title</label>
                                 <input type="text" class="form-control" id="title" aria-describedby="title" name="title" value="{{ $old ? $old->title : $data->title }}" />
                             </div>
@@ -25,38 +25,49 @@
                                 <label for="description" class="form-label">Description</label>
                                 <textarea class="form-control" id="description" aria-describedby="description" name="description" rows="7">{{ $old ? $old->description : $data->description }}</textarea>
                             </div>
+                        </div>
 
+                        <div class="row">
                             <div class="col-md-3 mb-3">
-                                <label for="plate_number" class="form-label">Plate Number</label>
-                                <input type="text" class="form-control" id="plate_number" aria-describedby="plate_number"
-                                    name="plate_number" value="{{ $old ? $old->plate_number : $data->plate_number }}" />
+                                <img src="{{ $data->path_featured_image }}" alt="{{ $data->path_featured_image }}" class="img-thumbnail w-100 mb-3"/>
+                                <label for="image" class="form-label">Featured Image</label>
+                                <input type="file" class="form-control" id="image" aria-describedby="image"
+                                    name="path_featured_image" value="{{ $old ? $old->path_featured_image : $data->path_featured_image }}" />
                             </div>
 
-                            <div class="col-md-3 mb-3">
-                                <label for="phone_number" class="form-label">Phone Number</label>
-                                <input type="tel" class="form-control" id="phone_number" aria-describedby="phone_number"
-                                    name="phone_number" value="{{ $old ? $old->phone_number : $data->phone_number }}" />
+                            <div class="col mb-3 row">
+                                @for($i = 1; $i < 4; $i++)
+                                <div class="col-4 form-group">
+                                    <img src="{{ $data->path_images[$i] ?? "https://placehold.co/200x100.png" }}" alt="{{ $data->path_images[$i] ?? null }}" class="img-thumbnail w-100 mb-3"/>
+                                    <label for="image" class="form-label">Image {{ $i }}</label>
+                                    <input type="file" class="form-control" aria-describedby="image" name="images[{{ $i }}]" />
+                                </div>
+                                @endfor
                             </div>
+                        </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" aria-describedby="email"
-                                    name="email"
-                                    value="{{ $old ? $old->email : ($data->user ? $data->user->email : null) }}" />
+                        <div class="row">
+                            <div class="col-12 mb-3" style="height:fit-content;">
+                                <label for="image" class="form-label">Content Post</label>
+                                <div id="editor" style="height:500px;"></div>
                             </div>
+                        </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label for="emergency_person" class="form-label">Emergency Person Name</label>
-                                <input type="text" class="form-control" id="emergency_person"
-                                    aria-describedby="emergency_person" name="emergency_person"
-                                    value="{{ $old ? $old->emergency_person : $data->emergency_person }}" />
-                            </div>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" name="reviewed" id="reviewed">
+                                    <label class="form-check-label" for="reviewed">
+                                        Review?
+                                    </label>
+                                </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label for="emergency_phone_number" class="form-label">Emergency Phone Number</label>
-                                <input type="tel" class="form-control" id="emergency_phone_number"
-                                    aria-describedby="emergency_phone_number" name="emergency_phone_number"
-                                    value="{{ $old ? $old->emergency_phone_number : $data->emergency_phone_number }}" />
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" name="published" id="published">
+                                    <label class="form-check-label" for="published">
+                                        Publish?
+                                    </label>
+                                </div>
                             </div>
 
                         </div>
@@ -74,3 +85,13 @@
     </div>
     <!--end::Row-->
 @endsection
+
+@push('scripts')
+<script>
+    (function() {
+        const quill = new Quill('#editor', {
+            theme: 'snow'
+          });
+    })();
+</script>
+@endpush
