@@ -29,7 +29,7 @@
 
                         <div class="row">
                             <div class="col-md-3 mb-3">
-                                <img src="{{ $data->path_featured_image }}" alt="{{ $data->path_featured_image }}" class="img-thumbnail w-100 mb-3"/>
+                                <img src="{{ url('storage/' . $data->path_featured_image) }}" alt="{{ $data->path_featured_image }}" class="img-thumbnail w-100 mb-3"/>
                                 <label for="image" class="form-label">Featured Image</label>
                                 <input type="file" class="form-control" id="image" aria-describedby="image"
                                     name="path_featured_image" value="{{ $old ? $old->path_featured_image : $data->path_featured_image }}" />
@@ -38,7 +38,7 @@
                             <div class="col mb-3 row">
                                 @for($i = 1; $i < 4; $i++)
                                 <div class="col-4 form-group">
-                                    <img src="{{ $data->path_images[$i] ?? "https://placehold.co/200x100.png" }}" alt="{{ $data->path_images[$i] ?? null }}" class="img-thumbnail w-100 mb-3"/>
+                                    <img src="{{ isset($data->path_images[$i]) ? url('storage/' . $data->path_images[$i]) : "https://placehold.co/200x100.png" }}" alt="{{ $data->path_images[$i] ?? null }}" class="img-thumbnail w-100 mb-3"/>
                                     <label for="image" class="form-label">Image {{ $i }}</label>
                                     <input type="file" class="form-control" aria-describedby="image" name="images[{{ $i }}]" />
                                 </div>
@@ -49,6 +49,7 @@
                         <div class="row">
                             <div class="col-12 mb-3" style="height:fit-content;">
                                 <label for="image" class="form-label">Content Post</label>
+                                <input type="hidden" name="contents" id="contents" value="{{ $old ? $old->contents : $data->contents }}"/>
                                 <div id="editor" style="height:500px;"></div>
                             </div>
                         </div>
@@ -56,14 +57,14 @@
                         <div class="row">
                             <div class="col-12 mb-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" name="reviewed" id="reviewed">
+                                    <input class="form-check-input" type="checkbox" value="" name="reviewed" id="reviewed" {{ $data->is_reviewed ? 'checked' : null }}>
                                     <label class="form-check-label" for="reviewed">
                                         Review?
                                     </label>
                                 </div>
 
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" name="published" id="published">
+                                    <input class="form-check-input" type="checkbox" value="" name="published" id="published" {{ $data->is_published ? 'checked' : null }}>
                                     <label class="form-check-label" for="published">
                                         Publish?
                                     </label>
@@ -76,6 +77,7 @@
                     <div class="card-footer">
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
+
                 </form>
                 <!-- /.card-body -->
             </div>
@@ -91,7 +93,14 @@
     (function() {
         const quill = new Quill('#editor', {
             theme: 'snow'
-          });
+        });
+
+        const content = JSON.parse(document.getElementById('contents').value);
+        quill.setContents(content);
+
+        quill.on('text-change', (delta, oldDelta, source) => {
+            document.getElementById('contents').value = JSON.stringify(quill.getContents());
+        });
     })();
 </script>
 @endpush

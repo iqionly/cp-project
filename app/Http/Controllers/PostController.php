@@ -22,13 +22,36 @@ class PostController extends Controller
     public function edit(Request $request, Post $post)
     {
         if($request->isMethod('put')) {
+            $request->validate([
+                'title' => ['required', 'string'],
+                'description' => ['required', 'string'],
+                'contents' => ['string'],
+                'path_featured_image' => ['image'],
+            ]);
+
             $data = $request->except([
                 '_token',
                 '_method',
-                'member_code',
+                'images',
+                'path_featured_image',
             ]);
 
-            $post->fill($data);
+            $uploadedFiles = [];
+            foreach($request->file() as $key => $file) {
+                if(is_array($file)) {
+                    foreach($file as $subkey => $subfile) {
+                        $uploadedFiles['path_images'][$subkey] = $subfile->storePublicly('images', 'public');
+                    }
+                    continue;
+                }
+                $uploadedFiles[$key] = $file->storePublicly('images', 'public');
+            }
+
+            $post->review($request->has('reviewed'));
+            $post->publish($request->has('published'));
+
+            $post->fill(array_merge($data, $uploadedFiles));
+
             $post->save();
         }
 
