@@ -3,6 +3,17 @@
 @section('content')
     <!--begin::Row-->
     <div class="row">
+        <div class="col-md-12">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+        </div>
 
         <div class="col-md-12">
             <div class="card mb-4">
@@ -11,7 +22,7 @@
                 </div>
                 <!-- /.card-header -->
                 <form method="post" enctype="multipart/form-data">
-                    @method('put')
+                    @method($method)
                     @csrf
                     <div class="card-body">
                         <div class="row">
@@ -29,7 +40,7 @@
 
                         <div class="row">
                             <div class="col-md-3 mb-3">
-                                <img src="{{ url('storage/' . $data->path_featured_image) }}" alt="{{ $data->path_featured_image }}" class="img-thumbnail w-100 mb-3"/>
+                                <img src="{{ $data->path_featured_image }}" alt="{{ $data->path_featured_image }}" class="img-thumbnail w-100 mb-3"/>
                                 <label for="image" class="form-label">Featured Image</label>
                                 <input type="file" class="form-control" id="image" aria-describedby="image"
                                     name="path_featured_image" value="{{ $old ? $old->path_featured_image : $data->path_featured_image }}" />
@@ -95,12 +106,15 @@
             theme: 'snow'
         });
 
-        const content = JSON.parse(document.getElementById('contents').value);
-        quill.setContents(content);
+        if(document.getElementById('contents').value) {
+            const content = JSON.parse(document.getElementById('contents').value);
+            quill.setContents(content);
+        }
 
         quill.on('text-change', (delta, oldDelta, source) => {
             document.getElementById('contents').value = JSON.stringify(quill.getContents());
         });
+
     })();
 </script>
 @endpush

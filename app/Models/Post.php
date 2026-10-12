@@ -6,9 +6,11 @@ use Database\Factories\PostFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[UseFactory(PostFactory::class)]
 #[Fillable(
@@ -22,7 +24,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 )]
 class Post extends Model
 {
-    use HasFactory;
+    use HasFactory, HasTimestamps, SoftDeletes;
 
     protected function casts(): array
     {
@@ -49,6 +51,13 @@ class Post extends Model
     {
         return new Attribute(
             get: fn() => substr($this->getAttribute('description'), 0, 100),
+        );
+    }
+
+    public function pathFeaturedImage(): Attribute
+    {
+        return new Attribute(
+            get: fn($value) => filter_var($value, FILTER_VALIDATE_URL) ? $value : (!empty($value) ? url('storage/'.$value) : "https://placehold.co/200x100.png"),
         );
     }
 

@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('location');
             $table->timestamp('start_at');
             $table->timestamp('end_at');
-            $table->unsignedInteger('max_attendant');
-            $table->unsignedInteger('min_attendant');
+            $table->unsignedInteger('max_attendant')->default(0);
+            $table->unsignedInteger('min_attendant')->default(0);
 
             $table->timestamps();
 

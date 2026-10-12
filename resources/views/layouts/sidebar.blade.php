@@ -28,6 +28,8 @@
         <nav class="mt-2" aria-label="Main navigation">
             <!--begin::Sidebar Menu-->
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false" id="navigation">
+
+                @can('role:admin')
                 <li class="nav-item {{ request()->routeIs('master-data.*') ? 'menu-open' : null }}">
                     <a href="#" class="nav-link">
                         <i class="nav-icon bi bi-speedometer"></i>
@@ -51,6 +53,13 @@
                         <p>Posts</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('event.index') }}" class="nav-link">
+                        <i class="nav-icon bi bi-file-earmark"></i>
+                        <p>Events</p>
+                    </a>
+                </li>
+                @endcan
 
             </ul>
             <!--end::Sidebar Menu-->

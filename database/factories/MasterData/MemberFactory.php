@@ -2,6 +2,8 @@
 
 namespace Database\Factories\MasterData;
 
+use App\Models\Authorizations\Role;
+use App\Models\Authorizations\RoleUser;
 use App\Models\MasterData\Member;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
@@ -45,7 +47,12 @@ class MemberFactory extends Factory
         $nik .= $birthdate . str_pad($this->faker->randomNumber(4), 4, "0");
 
         return [
-            'user_id' => User::factory(),
+            'user_id' => User::factory()->afterCreating(function($test) {
+                $test = new RoleUser(
+                    ['user_id' => $test->id, 'role_id' => 2],
+                );
+                $test->save();
+            }),
             'member_code' => 'ID' . $this->getNumber(),
             'first_name' => $this->faker->firstName($gender),
             'last_name' => $this->faker->lastName($gender),

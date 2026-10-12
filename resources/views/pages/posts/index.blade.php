@@ -8,6 +8,9 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <h3 class="card-title">List Posts</h3>
+                    <div class="card-tools">
+                        <a href="{{ route('post.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+                    </div>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body p-0">
@@ -30,12 +33,12 @@
                             @foreach ($data as $post)
                                 <tr class="align-middle">
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>
-                                        <img src="{{ $post->path_featured_image }}" class="img-thumbnail" alt="{{ $post->path_featured_image }}">
+                                    <td style="max-width: 200px;">
+                                        <img src="{{ $post->path_featured_image }}" class="img-thumbnail w-100" alt="{{ $post->path_featured_image }}">
                                     </td>
                                     <td>{{ $post->title }}</td>
                                     <td>{{ $post->short_description }}</td>
-                                    <td>...</td>
+                                    <td><span class="badge text-bg-info">+{{ count($post->path_images ?? []) }}</span></td>
                                     <td>
                                         @if ($post->is_reviewed)
                                             <span class="badge text-bg-success">reviewed</span>

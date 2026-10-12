@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -32,5 +34,9 @@ class AppServiceProvider extends ServiceProvider
         View::share('old', $req->old());
 
         unset($req, $rawPath, $paths);
+
+        Gate::define('role:admin', function (User $user) {
+            return $user->roles()->where('role_grouping', 'admin')->count() >= 1 ? true : false;
+        });
     }
 }
