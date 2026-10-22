@@ -58,20 +58,7 @@
                         </tbody>
                     </table>
 
-                    <div class="text-center">
-                        <div class="btn-group m-2" role="group" aria-label="pagination">
-                            @for ($i = 1; $i <= min(10, $data->lastPage()); $i++)
-                                @if ($data->currentPage() > 1 && $i == 1)
-                                    <a href="?page={{ $data->currentPage() - 1 }}" class="btn btn-secondary">Prev</a>
-                                @endif
-                                <a href="?page={{ $i }}"
-                                    class="btn btn-secondary {{ $data->currentPage() == $i ? 'active' : null }}">{{ $i }}</a>
-                                @if ($data->currentPage() < 10 && $i == 10)
-                                    <a href="?page={{ $data->currentPage() + 1 }}" class="btn btn-secondary">Next</a>
-                                @endif
-                            @endfor
-                        </div>
-                    </div>
+                    {{ $data->links() }}
 
                 </div>
                 <!-- /.card-body -->

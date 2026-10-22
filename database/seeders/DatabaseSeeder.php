@@ -3,11 +3,12 @@
 namespace Database\Seeders;
 
 use App\Models\Authorizations\Role;
+use App\Models\Contribution\FeeType;
+use App\Models\Contribution\InvoiceJournal;
 use App\Models\Event;
 use App\Models\MasterData\Member;
 use App\Models\Post;
 use App\Models\User;
-use Database\Factories\PostFactory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,14 @@ class DatabaseSeeder extends Seeder
     {
         DB::beginTransaction();
 
+        $this->init();
+        $this->contrib();
+
+        DB::commit();
+    }
+
+    private function init()
+    {
         $roleids = [];
 
         foreach([
@@ -65,6 +74,14 @@ class DatabaseSeeder extends Seeder
         Post::factory(50)->for(User::query()->find(1))->create();
         Event::factory(50)->for(Post::factory()->for(User::query()->find(1)))->create();
 
-        DB::commit();
+    }
+
+    private function contrib()
+    {
+        $journal = new InvoiceJournal();
+        $journal->name = 'Fee Members';
+        $journal->code = 'FEE-';
+        $journal->default_amount = 50000;
+        $journal->save();
     }
 }

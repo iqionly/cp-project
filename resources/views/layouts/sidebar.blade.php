@@ -17,7 +17,8 @@
     <!--begin::Sidebar Search-->
     <div class="sidebar-search" role="search">
         <label for="sidebar-search-input" class="visually-hidden">Filter menu</label>
-        <input type="search" id="sidebar-search-input" class="form-control form-control-sm" placeholder="Filter menu…" autocomplete="off" data-lte-toggle="sidebar-search" data-lte-target="#navigation" />
+        <input type="search" id="sidebar-search-input" class="form-control form-control-sm" placeholder="Filter menu…"
+            autocomplete="off" data-lte-toggle="sidebar-search" data-lte-target="#navigation" />
         <p class="fs-7 text-secondary mt-2 mb-0" data-lte-search-empty role="status" hidden>
             No matching pages.
         </p>
@@ -29,37 +30,61 @@
             <!--begin::Sidebar Menu-->
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false" id="navigation">
 
-                @can('role:admin')
-                <li class="nav-item {{ request()->routeIs('master-data.*') ? 'menu-open' : null }}">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon bi bi-speedometer"></i>
-                        <p>
-                            Master Data
-                            <i class="nav-arrow bi bi-chevron-right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('master-data.member.list') }}" class="nav-link {{ request()->routeIs('master-data.member.list') ? 'active' : null }}">
-                                <i class="nav-icon bi bi-people"></i>
-                                <p>Members</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                @can('role', ['admin'])
+                    <li class="nav-item {{ request()->routeIs('master-data.*') ? 'menu-open' : null }}">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon bi bi-speedometer"></i>
+                            <p>
+                                Master Data
+                                <i class="nav-arrow bi bi-chevron-right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('master-data.member.list') }}"
+                                    class="nav-link {{ request()->routeIs('master-data.member.list') ? 'active' : null }}">
+                                    <i class="nav-icon bi bi-people"></i>
+                                    <p>Members</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('master-data.user.list') }}"
+                                    class="nav-link {{ request()->routeIs('master-data.user.list') ? 'active' : null }}">
+                                    <i class="nav-icon bi bi-people"></i>
+                                    <p>Users</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('post.index') }}" class="nav-link {{ request()->routeIs('post.index') ? 'active' : null }}">
+                            <i class="nav-icon bi bi-file-earmark"></i>
+                            <p>Posts</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('event.index') }}" class="nav-link  {{ request()->routeIs('event.index') ? 'active' : null }}">
+                            <i class="nav-icon bi bi-file-earmark"></i>
+                            <p>Events</p>
+                        </a>
+                    </li>
                 <li class="nav-item">
-                    <a href="{{ route('post.index') }}" class="nav-link">
-                        <i class="nav-icon bi bi-file-earmark"></i>
-                        <p>Posts</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('event.index') }}" class="nav-link">
-                        <i class="nav-icon bi bi-file-earmark"></i>
-                        <p>Events</p>
-                    </a>
-                </li>
+                        <a href="{{ route('invoice.generate') }}" class="nav-link  {{ request()->routeIs('invoice.generate') ? 'active' : null }}">
+                            <i class="nav-icon bi bi-file-earmark"></i>
+                            <p>Generate Invoice</p>
+                        </a>
+                    </li>
                 @endcan
+
+                @can('role', ['admin', 'member'])
+                    <li class="nav-item">
+                        <a href="{{ route('contrib.index') }}" class="nav-link  {{ request()->routeIs('event.index') ? 'active' : null }}">
+                            <i class="nav-icon bi bi-file-earmark"></i>
+                            <p>Invoices</p>
+                        </a>
+                    </li>
+                @endcan
+
 
             </ul>
             <!--end::Sidebar Menu-->

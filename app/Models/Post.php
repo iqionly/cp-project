@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasDescription;
 use Database\Factories\PostFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 #[UseFactory(PostFactory::class)]
 #[Fillable(
@@ -24,7 +26,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 )]
 class Post extends Model
 {
-    use HasFactory, HasTimestamps, SoftDeletes;
+    use HasFactory, HasTimestamps, SoftDeletes, HasDescription;
 
     protected function casts(): array
     {
@@ -35,28 +37,21 @@ class Post extends Model
 
     public function isReviewed(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn() => !empty($this->getAttribute('reviewed_at')),
         );
     }
 
     public function isPublished(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn() => !empty($this->getAttribute('published_at')),
-        );
-    }
-
-    public function shortDescription(): Attribute
-    {
-        return new Attribute(
-            get: fn() => substr($this->getAttribute('description'), 0, 100),
         );
     }
 
     public function pathFeaturedImage(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn($value) => filter_var($value, FILTER_VALIDATE_URL) ? $value : (!empty($value) ? url('storage/'.$value) : "https://placehold.co/200x100.png"),
         );
     }
@@ -71,6 +66,20 @@ class Post extends Model
     {
         $this->published_at = $y ? date('Y-m-d H:i:s') : null;
         return $this;
+    }
+
+    public function menu_public(bool $y = true)
+    {
+        $this->menu = $y;
+        return $this;
+    }
+
+    public function slug(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => $value ? $value : Str::slug($this->getAttribute('title')),
+            set: fn($value) => $value ? $value : Str::slug($this->getAttribute('title')),
+        );
     }
 
     public function user(): BelongsTo

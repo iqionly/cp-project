@@ -3,17 +3,6 @@
 @section('content')
     <!--begin::Row-->
     <div class="row">
-        <div class="col-md-12">
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-        </div>
 
         <div class="col-md-12">
             <div class="card mb-4">
@@ -30,6 +19,11 @@
                             <div class="col-12 mb-3">
                                 <label for="title" class="form-label">Title</label>
                                 <input type="text" class="form-control" id="title" aria-describedby="title" name="title" value="{{ $old ? $old->title : $data->title }}" />
+                            </div>
+
+                            <div class="col-12 mb-3">
+                                <label for="slug" class="form-label">Slug</label>
+                                <input type="text" class="form-control" id="slug" aria-describedby="slug" name="slug" value="{{ $old ? $old->slug : $data->slug }}" />
                             </div>
 
                             <div class="col-12 mb-3">
@@ -66,6 +60,7 @@
                         </div>
 
                         <div class="row">
+
                             <div class="col-12 mb-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="" name="reviewed" id="reviewed" {{ $data->is_reviewed ? 'checked' : null }}>
@@ -78,6 +73,13 @@
                                     <input class="form-check-input" type="checkbox" value="" name="published" id="published" {{ $data->is_published ? 'checked' : null }}>
                                     <label class="form-check-label" for="published">
                                         Publish?
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" name="menu" id="menu" {{ $data->menu ? 'checked' : null }}>
+                                    <label class="form-check-label" for="menu">
+                                        Show menu link?
                                     </label>
                                 </div>
                             </div>

@@ -97,16 +97,10 @@
                         alt="{{ substr($user_logged_name, 0, 1) }}" />
                     <span class="d-none d-md-inline">{{ substr($user_logged_name, 0, 1) }}</span>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                    <!--begin::User Image-->
-                    <li class="user-header text-bg-primary">
-                        <img src="./assets/img/user2-160x160.jpg" class="rounded-circle shadow"
-                            alt="{{ $user_logged_name }}" />
-                        <p>
-                            {{ $user_logged_name }}
-                        </p>
-                    </li>
-                    <!--end::User Image-->
+                <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end user-roles">
+                    @foreach(request()->user()->roles as $role)
+                        <li><a href="{{ url(request()->path()) }}?cr={{ $role->id }}">{{ $role->name }}</a></li>
+                    @endforeach
                     <!--begin::Menu Footer-->
                     <li class="user-footer">
                         <a href="#" class="btn btn-outline-secondary">Profile</a>

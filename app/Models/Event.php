@@ -35,7 +35,7 @@ class Event extends Model
 
     public function shortEventPeriod(): Attribute
     {
-        return new Attribute(
+        return Attribute::make(
             get: fn() => substr($this->start_at, 0, -3) . ' to ' . substr($this->end_at, 0, -3),
         );
     }

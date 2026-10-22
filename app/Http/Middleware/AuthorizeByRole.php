@@ -14,11 +14,17 @@ class AuthorizeByRole
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $role_grouping): Response
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if($request->user()->roles()->where('role_grouping', $role_grouping)->count() == 0) {
-            return redirect()->back();
+        $rawPath = explode('/', $request->path());
+        $subcontext = explode(":", $rawPath[0]);
+        if(in_array($subcontext[0], $roles)) {
+            return $next($request);
         }
-        return $next($request);
+        return redirect()
+            ->back()
+            ->withErrors([
+                'auth' => 'You don\'t have permission to access the menu',
+            ]);
     }
 }

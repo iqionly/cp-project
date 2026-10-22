@@ -103,8 +103,11 @@ class PostController extends Controller
 
             $post->review($request->has('reviewed'));
             $post->publish($request->has('published'));
+            $post->menu_public($request->has('menu'));
 
             $post->fill(array_merge($data, $uploadedFiles));
+
+            $post->slug = $data['slug'];
 
             $post->save();
         }

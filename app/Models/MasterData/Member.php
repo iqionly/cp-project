@@ -2,6 +2,9 @@
 
 namespace App\Models\MasterData;
 
+use App\Models\Contribution\Invoice;
+use App\Models\Contribution\MemberFeeSetting;
+use App\Models\Contribution\Payment;
 use App\Models\Traits\FormatDate;
 use App\Models\Traits\SerializeDate;
 use App\Models\User;
@@ -39,6 +42,26 @@ class Member extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function member(): HasOne
+    {
+        return $this->hasOne(Member::class);
+    }
+
+    public function feeSettings()
+    {
+        return $this->hasMany(MemberFeeSetting::class);
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
     }
 
     /**

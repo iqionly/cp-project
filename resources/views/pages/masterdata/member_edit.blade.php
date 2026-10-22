@@ -7,7 +7,7 @@
         <div class="col-md-12">
             <div class="card mb-4">
                 <div class="card-header">
-                    <h3 class="card-title">Edit Member - {{ $data->full_name }} - ( {{ $data->member_code}} )</h3>
+                    <h3 class="card-title">Edit Member - {{ $data->full_name }} - ( {{ $data->member_code }} )</h3>
                 </div>
                 <!-- /.card-header -->
                 <form method="post">
@@ -19,12 +19,13 @@
                                 <label for="member_code" class="form-label">Member Code</label>
                                 <input type="text" class="form-control" id="member_code"
                                     aria-describedby="member_code_help" name="member_code"
-                                    value="{{ $old ? $old->member_code : $data->member_code }}" disabled/>
+                                    value="{{ $old ? $old->member_code : $data->member_code }}" disabled />
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label for="nik" class="form-label">NIK</label>
-                                <input type="text" class="form-control" id="nik" aria-describedby="nik" name="nik" value="{{ $old ? $old->nik : $data->nik }}" />
+                                <input type="text" class="form-control" id="nik" aria-describedby="nik"
+                                    name="nik" value="{{ $old ? $old->nik : $data->nik }}" />
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -56,7 +57,8 @@
 
                             <div class="col-md-3 mb-3">
                                 <label for="birth_date" class="form-label">Birth Date</label>
-                                <input type="date" class="form-control" id="birth_date" aria-describedby="birth_date" name="birth_date" value="{{ $old ? $old->birth_date : $data->birth_date }}" />
+                                <input type="date" class="form-control" id="birth_date" aria-describedby="birth_date"
+                                    name="birth_date" value="{{ $old ? $old->birth_date : $data->birth_date }}" />
                             </div>
 
                             <div class="col-md-3 mb-3">
