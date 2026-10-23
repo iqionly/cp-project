@@ -21,17 +21,19 @@
                 <!--begin::App Content Header-->
                 <div class="app-content-header">
                     <!--begin::Container-->
-                    <div class="container-fluid">
+                    <div class="container">
                         <!--begin::Row-->
                         <div class="row">
+                            @if(!request()->routeIs('public.posts'))
                             <div class="col-sm-6">
                                 <h1 class="mb-0 fs-3">{{ isset($page_title) ? $page_title : null }}</h1>
                             </div>
-                            <div class="col-sm-6">
+                            @endif
+                            <div class="col-sm-{{ request()->routeIs('public.posts') ? 12 : 6 }}">
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb float-sm-end">
                                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                        @foreach ($page_breadcumb as $title)
+                                        @foreach ($page_breadcumb ?? [] as $title)
                                             <li class="breadcrumb-item {{ $loop->last ? 'active' : null }}"
                                                 aria-current="page">{{ $title }}</li>
                                         @endforeach

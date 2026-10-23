@@ -10,7 +10,7 @@
     <body class="login-page bg-body-secondary">
         <main class="login-box">
             <h1 class="login-logo">
-                <a href="../index2.html"><b>Admin</b>LTE</a>
+                <a href="{{ url('/') }}"><b>CLUB</b> MGMT</a>
             </h1>
             <!-- /.login-logo -->
             <div class="card">
@@ -51,9 +51,6 @@
                         <!--end::Row-->
                     </form>
 
-                    <p class="mb-1">
-                        <a href="forgot-password.html">I forgot my password</a>
-                    </p>
                     <p class="mb-0">
                         <a href="register.html" class="text-center"> Register a new membership </a>
                     </p>

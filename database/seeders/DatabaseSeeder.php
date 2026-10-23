@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Authorizations\Role;
-use App\Models\Contribution\FeeType;
 use App\Models\Contribution\InvoiceJournal;
 use App\Models\Event;
 use App\Models\MasterData\Member;
@@ -35,11 +34,11 @@ class DatabaseSeeder extends Seeder
     {
         $roleids = [];
 
-        foreach([
-            [ 'admin', 'admin' ],
-            [ 'member', 'member' ],
+        foreach ([
+            ['admin', 'admin'],
+            ['member', 'member'],
         ] as $idx => $data) {
-            $role = new Role();
+            $role = new Role;
             $role->id = ++$idx;
             $role->name = $data[0];
             $role->role_grouping = $data[1];
@@ -47,7 +46,7 @@ class DatabaseSeeder extends Seeder
             $roleids[] = $role->id;
         }
 
-        $admin = new User();
+        $admin = new User;
         $admin->id = 1;
         $admin->name = 'admin';
         $admin->email = 'test@example.test';
@@ -57,28 +56,30 @@ class DatabaseSeeder extends Seeder
         $admin->roles()->attach([1]);
         $admin->save();
 
-        $adminMember = new Member();
+        $adminMember = new Member;
         $adminMember->id = 1;
         $adminMember->user()->associate($admin);
-        $adminMember->member_code = "ID0001";
-        $adminMember->first_name = "Admin";
-        $adminMember->last_name = "Admin";
-        $adminMember->gender = "M";
-        $adminMember->birth_date = "2009-03-21";
-        $adminMember->nik = "4364893101771821";
-        $adminMember->plate_number = "D19181AC";
-        $adminMember->phone_number = "081222335342";
+        $adminMember->member_code = 'ID0001';
+        $adminMember->first_name = 'Admin';
+        $adminMember->last_name = 'Admin';
+        $adminMember->gender = 'M';
+        $adminMember->birth_date = '2009-03-21';
+        $adminMember->nik = '4364893101771821';
+        $adminMember->plate_number = 'D19181AC';
+        $adminMember->phone_number = '081222335342';
         $adminMember->save();
 
         Member::factory(50)->create();
-        Post::factory(50)->for(User::query()->find(1))->create();
-        Event::factory(50)->for(Post::factory()->for(User::query()->find(1)))->create();
+        $posts = Post::factory()->count(50)->for(User::query()->find(1))->create();
+        foreach ($posts as $post) {
+            Event::factory()->for($post)->create();
+        }
 
     }
 
     private function contrib()
     {
-        $journal = new InvoiceJournal();
+        $journal = new InvoiceJournal;
         $journal->name = 'Fee Members';
         $journal->code = 'FEE-';
         $journal->default_amount = 50000;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -13,17 +14,17 @@ class PostController extends Controller
             'data' => Post::with('user')
                 ->orderBy('created_at', 'desc')
                 ->paginate(
-                $request->input('limit'),
-                ['*'],
-                'page',
-                (int) $request->input('page', 1),
-            )
+                    $request->input('limit'),
+                    ['*'],
+                    'page',
+                    (int) $request->input('page', 1),
+                ),
         ]);
     }
 
     public function create(Request $request)
     {
-        if($request->isMethod('post')) {
+        if ($request->isMethod('post')) {
             $request->validate([
                 'title' => ['required', 'string'],
                 'description' => ['required', 'string'],
@@ -36,18 +37,20 @@ class PostController extends Controller
                 '_method',
                 'images',
                 'path_featured_image',
+                'is_menu',
             ]);
 
-            $post = new Post();
+            $post = new Post;
 
             $post->user()->associate($request->user());
 
             $uploadedFiles = [];
-            foreach($request->file() as $key => $file) {
-                if(is_array($file)) {
-                    foreach($file as $subkey => $subfile) {
+            foreach ($request->file() as $key => $file) {
+                if (is_array($file)) {
+                    foreach ($file as $subkey => $subfile) {
                         $uploadedFiles['path_images'][$subkey] = $subfile->storePublicly('images', 'public');
                     }
+
                     continue;
                 }
                 $uploadedFiles[$key] = $file->storePublicly('images', 'public');
@@ -66,14 +69,14 @@ class PostController extends Controller
         }
 
         return view('pages.posts.edit', [
-            'data' => new Post(),
+            'data' => new Post,
             'method' => $request->routeIs('post.create') ? 'post' : 'put',
         ]);
     }
 
     public function edit(Request $request, Post $post)
     {
-        if($request->isMethod('put')) {
+        if ($request->isMethod('put')) {
             $request->validate([
                 'title' => ['required', 'string'],
                 'description' => ['required', 'string'],
@@ -86,16 +89,18 @@ class PostController extends Controller
                 '_method',
                 'images',
                 'path_featured_image',
+                'is_menu',
             ]);
 
             $uploadedFiles = [];
-            foreach($request->file() as $key => $file) {
-                if(is_array($file)) {
+            foreach ($request->file() as $key => $file) {
+                if (is_array($file)) {
                     $subFileUploads = $post->path_images;
-                    foreach($file as $subkey => $subfile) {
+                    foreach ($file as $subkey => $subfile) {
                         $subFileUploads[$subkey] = $subfile->storePublicly('images', 'public');
                     }
                     $uploadedFiles['path_images'] = $subFileUploads;
+
                     continue;
                 }
                 $uploadedFiles[$key] = $file->storePublicly('images', 'public');
@@ -103,13 +108,17 @@ class PostController extends Controller
 
             $post->review($request->has('reviewed'));
             $post->publish($request->has('published'));
-            $post->menu_public($request->has('menu'));
 
             $post->fill(array_merge($data, $uploadedFiles));
 
-            $post->slug = $data['slug'];
-
             $post->save();
+
+            if ($request->has('is_menu')) {
+                $post->menu_post()->create([
+                    'default' => DB::table('menu_posts')->max('default') + 100,
+                    'menu_title' => $post->title,
+                ]);
+            }
         }
 
         return view('pages.posts.edit', [
@@ -120,7 +129,7 @@ class PostController extends Controller
 
     public function delete(Request $request, Post $post)
     {
-        if($post->delete()) {
+        if ($post->delete()) {
             return redirect()->back();
         }
     }

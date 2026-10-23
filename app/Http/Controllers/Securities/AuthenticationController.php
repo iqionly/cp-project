@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthenticationController extends Controller
 {
-
     public function login_page(Request $request)
     {
         return view('securities.page_login');
@@ -18,11 +17,11 @@ class AuthenticationController extends Controller
     {
         $credentials = $request->validate([
             'user' => ['string'],
-            'pin' => ['string']
+            'pin' => ['string'],
         ]);
 
         // if($credentials['user'])
-        if($email = filter_var($credentials['user'], FILTER_VALIDATE_EMAIL)) {
+        if ($email = filter_var($credentials['user'], FILTER_VALIDATE_EMAIL)) {
             $credentials['email'] = $email;
         } else {
             $credentials['name'] = $credentials['user'];
@@ -31,10 +30,12 @@ class AuthenticationController extends Controller
         unset($credentials['user']);
         unset($credentials['pin']);
 
-        if(Auth::attempt($credentials, $request->get('remember'))) {
+        if ($user = Auth::attempt($credentials, $request->get('remember'))) {
             $request->session()->regenerate();
 
-            return redirect()->intended();
+            $role = Auth::user()->roles->first();
+
+            return redirect()->intended('/'.$role->role_grouping.'/home');
         }
 
         return back()->withErrors([

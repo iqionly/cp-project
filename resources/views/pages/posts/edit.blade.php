@@ -77,11 +77,12 @@
                                 </div>
 
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" name="menu" id="menu" {{ $data->menu ? 'checked' : null }}>
-                                    <label class="form-check-label" for="menu">
-                                        Show menu link?
+                                    <input class="form-check-input" type="checkbox" value="" name="is_menu" id="is_menu" {{ $data->is_menu ? 'checked' : null }}>
+                                    <label class="form-check-label" for="is_menu">
+                                        Show in Menu Public?
                                     </label>
                                 </div>
+
                             </div>
 
                         </div>
@@ -109,12 +110,14 @@
         });
 
         if(document.getElementById('contents').value) {
-            const content = JSON.parse(document.getElementById('contents').value);
-            quill.setContents(content);
+            quill.root.innerHTML = document.getElementById('contents').value;
         }
 
         quill.on('text-change', (delta, oldDelta, source) => {
-            document.getElementById('contents').value = JSON.stringify(quill.getContents());
+            if(quill.root.innerHTML.length == 0) {
+                return;
+            }
+            document.getElementById('contents').value = quill.root.innerHTML;
         });
 
     })();

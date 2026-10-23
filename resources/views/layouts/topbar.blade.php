@@ -18,9 +18,9 @@
         <!--begin::Collapsible Menu-->
         <div class="collapse navbar-collapse" id="topNavMenu">
             <ul class="navbar-nav">
-                @foreach($menus as $menu)
+                @foreach($menus ?? [] as $menu)
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url('public.posts', [$menu->slug])}}">{{ $menu->menu_title }}</a>
+                    <a class="nav-link" href="{{ route('public.posts', [$menu->slug])}}">{{ $menu->menu_title }}</a>
                 </li>
                 @endforeach
             </ul>

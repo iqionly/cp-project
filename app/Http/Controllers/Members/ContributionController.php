@@ -3,21 +3,15 @@
 namespace App\Http\Controllers\Members;
 
 use App\Http\Controllers\Controller;
-use App\Models\Contribution\EventDue;
-use App\Models\Contribution\FeeType;
 use App\Models\Contribution\Invoice;
 use App\Models\Contribution\InvoiceItem;
-use App\Models\Contribution\MemberPayment;
 use App\Models\Contribution\Payment;
+use App\Models\Contribution\PaymentAllocation;
 use App\Models\MasterData\Member;
-use App\Models\User;
 use App\Scopes\SearchMemberFilter;
-use App\Services\InvoiceService;
 use App\Services\PaymentService;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 
 class ContributionController extends Controller
 {
@@ -48,13 +42,14 @@ class ContributionController extends Controller
                 ->when($request->context()->role_grouping != 'admin', function (Builder $query) use ($memberId) {
                     $query->where('member_id', $memberId);
                 })
+                ->tap(new SearchMemberFilter($request))
                 ->orderBy('created_at', 'desc')
                 ->paginate($request->input('limit', 10)),
             'page_title' => $request->context()->role_grouping != 'admin' ? 'Your Contribution' : 'Invoices & Payments Members',
         ]);
     }
 
-    public function create(Request $request, PaymentService $paymentService, Member $member = null)
+    public function create(Request $request, PaymentService $paymentService, ?Member $member = null)
     {
         if ($request->isMethod('post')) {
             $request->validate([
@@ -84,7 +79,7 @@ class ContributionController extends Controller
         return view('pages.members.contrib_edit', [
             'invoices' => $invoices,
             'data' => null,
-            'payments' => \App\Models\Contribution\PaymentAllocation::where('invoice_id', -1)
+            'payments' => PaymentAllocation::where('invoice_id', -1)
                 ->with('payment')
                 ->paginate($request->input('limit', 10)),
         ]);
@@ -97,7 +92,7 @@ class ContributionController extends Controller
             'selectedInvoice' => $mp,
             'data' => $mp,
             'items' => $mp->invoice_items,
-            'payments' => \App\Models\Contribution\PaymentAllocation::where('invoice_id', $mp->id)
+            'payments' => PaymentAllocation::where('invoice_id', $mp->id)
                 ->with('payment')
                 ->paginate($request->input('limit', 10)),
         ]);
@@ -213,7 +208,7 @@ class ContributionController extends Controller
             return back()->with('error', 'Approved payments cannot be deleted.');
         }
 
-        \App\Models\Contribution\PaymentAllocation::where('payment_id', $payment->id)->delete();
+        PaymentAllocation::where('payment_id', $payment->id)->delete();
         $payment->delete();
 
         return back()->with('success', 'Payment deleted successfully.');
@@ -221,14 +216,13 @@ class ContributionController extends Controller
 
     public function adminReview(Request $request, Payment $payment, bool $status = false)
     {
-        if($payment->status == 'REVIEWED') {
+        if ($payment->status == 'REVIEWED') {
             $payment->approve($status);
         } else {
             $payment->review($status);
         }
         $payment->save();
 
-        return back()->with('success', 'Payment status updated to ' . ($status ? 'REVIEWED' : 'REJECTED'));
+        return back()->with('success', 'Payment status updated to '.($status ? 'REVIEWED' : 'REJECTED'));
     }
-
 }

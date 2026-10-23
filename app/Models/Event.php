@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Traits\FormatDate;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable(
     'location',
@@ -19,24 +19,34 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 )]
 class Event extends Model
 {
-    use HasTimestamps, HasFactory;
+    use FormatDate, HasFactory, HasTimestamps;
 
     public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class);
     }
 
+    protected function startAt(): Attribute
+    {
+        return $this->makeAttribute('long');
+    }
+
+    protected function endAt(): Attribute
+    {
+        return $this->makeAttribute('long');
+    }
+
     public function eventPeriod(): Attribute
     {
         return new Attribute(
-            get: fn() => $this->start_at . ' to ' . $this->end_at,
+            get: fn () => $this->start_at.' to '.$this->end_at,
         );
     }
 
     public function shortEventPeriod(): Attribute
     {
         return Attribute::make(
-            get: fn() => substr($this->start_at, 0, -3) . ' to ' . substr($this->end_at, 0, -3),
+            get: fn () => substr($this->start_at, 0, -3).' to '.substr($this->end_at, 0, -3),
         );
     }
 }

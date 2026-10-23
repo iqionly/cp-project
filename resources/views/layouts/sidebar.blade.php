@@ -31,7 +31,7 @@
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false" id="navigation">
 
                 @can('role', ['admin'])
-                    <li class="nav-item {{ request()->routeIs('master-data.*') ? 'menu-open' : null }}">
+                    <li class="nav-item {{ request()->routeIs('master-data.*') || request()->routeIs('post.*') || request()->routeIs('event.*') ? 'menu-open' : null }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-speedometer"></i>
                             <p>
@@ -42,49 +42,69 @@
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 <a href="{{ route('master-data.member.list') }}"
-                                    class="nav-link {{ request()->routeIs('master-data.member.list') ? 'active' : null }}">
+                                    class="nav-link {{ request()->routeIs('master-data.member.*') ? 'active' : null }}">
                                     <i class="nav-icon bi bi-people"></i>
                                     <p>Members</p>
                                 </a>
                             </li>
                             <li class="nav-item">
+                                <a href="{{ route('post.index') }}" class="nav-link {{ request()->routeIs('post.*') ? 'active' : null }}">
+                                    <i class="nav-icon bi bi-stickies-fill"></i>
+                                    <p>Posts</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('event.index') }}" class="nav-link  {{ request()->routeIs('event.*') ? 'active' : null }}">
+                                    <i class="nav-icon bi bi-calendar-event-fill"></i>
+                                    <p>Events</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a href="{{ route('master-data.user.list') }}"
-                                    class="nav-link {{ request()->routeIs('master-data.user.list') ? 'active' : null }}">
+                                    class="nav-link {{ request()->routeIs('master-data.user.*') ? 'active' : null }}">
                                     <i class="nav-icon bi bi-people"></i>
                                     <p>Users</p>
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a href="{{ route('post.index') }}" class="nav-link {{ request()->routeIs('post.index') ? 'active' : null }}">
-                            <i class="nav-icon bi bi-file-earmark"></i>
-                            <p>Posts</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('event.index') }}" class="nav-link  {{ request()->routeIs('event.index') ? 'active' : null }}">
-                            <i class="nav-icon bi bi-file-earmark"></i>
-                            <p>Events</p>
-                        </a>
-                    </li>
-                <li class="nav-item">
-                        <a href="{{ route('invoice.generate') }}" class="nav-link  {{ request()->routeIs('invoice.generate') ? 'active' : null }}">
-                            <i class="nav-icon bi bi-file-earmark"></i>
-                            <p>Generate Invoice</p>
-                        </a>
-                    </li>
-                @endcan
 
+                @endcan
                 @can('role', ['admin', 'member'])
                     <li class="nav-item">
-                        <a href="{{ route('contrib.index') }}" class="nav-link  {{ request()->routeIs('event.index') ? 'active' : null }}">
-                            <i class="nav-icon bi bi-file-earmark"></i>
+                        <a href="{{ route('contrib.index') }}" class="nav-link  {{ request()->routeIs('contrib.*') ? 'active' : null }}">
+                            <i class="nav-icon bi bi-cash-coin"></i>
                             <p>Invoices</p>
                         </a>
                     </li>
                 @endcan
+                @can('role', ['admin'])
 
+                    <li class="nav-item {{ request()->routeIs('invoice.*') || request()->routeIs('menu-setting.*') ? 'menu-open' : null }}">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon bi bi-gear"></i>
+                            <p>
+                                Settings
+                                <i class="nav-arrow bi bi-chevron-right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('invoice.generate') }}" class="nav-link  {{ request()->routeIs('invoice.generate') ? 'active' : null }}">
+                                    <i class="nav-icon bi bi-cash-stack"></i>
+                                    <p>Generate Invoice</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('menu-setting.index') }}" class="nav-link  {{ request()->routeIs('menu-setting.*') ? 'active' : null }}">
+                                    <i class="nav-icon bi bi-menu-app"></i>
+                                    <p>Menu Setting</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                @endcan
 
             </ul>
             <!--end::Sidebar Menu-->

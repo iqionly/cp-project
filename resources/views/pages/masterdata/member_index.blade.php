@@ -37,7 +37,7 @@
                                             <span class="badge text-bg-warning">need account</span>
                                         @endif
                                     </td>
-                                    <td>{{ $member->phone_number }}</td>
+                                    <td>{{ $member->masked_phone_number }}</td>
                                     <td>{{ $member->user->masked_email }}</td>
                                     <td>{{ $member->created_at }}</td>
                                     <td>

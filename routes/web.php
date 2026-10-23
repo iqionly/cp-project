@@ -1,25 +1,24 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\MasterData\MemberController;
-use App\Http\Controllers\PostController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\MasterData\MemberController;
 use App\Http\Controllers\MasterData\UserController;
 use App\Http\Controllers\Members\ContributionController;
 use App\Http\Controllers\Members\InvoiceController;
+use App\Http\Controllers\MenuSettingController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\Publics\EventController as PublicsEventController;
 use App\Http\Controllers\Publics\HomeController;
+use App\Http\Controllers\Publics\PostController as PublicsPostController;
 use App\Http\Controllers\Securities\AuthenticationController;
-use App\Http\Middleware\AuthorizeByRole;
-use App\Http\Middleware\SetDefaultsContext;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['guest'])->group(function (Router $router) {
-    $router->get('/login', [AuthenticationController::class, 'login_page'])->name('auth.login');
-    $router->post('/login', [AuthenticationController::class, 'authentication']);
-});
+Route::get('/', [HomeController::class, 'home_page'])->name('home_page');
 
-Route::get('/{context?}', [HomeController::class, 'home_page'])->name('home_page');
+Route::get('/events', [PublicsEventController::class, 'index'])->name('public.events.index');
+Route::get('/events/{event}', [PublicsEventController::class, 'show'])->name('public.events.show');
 
 Route::middleware(['auth'])->prefix('/{context?}')->group(function (Router $router) {
     $router->get('/home', [DashboardController::class, 'home'])->name('home');
@@ -57,6 +56,13 @@ Route::middleware(['auth'])->prefix('/{context?}')->group(function (Router $rout
             $router->delete('/user/{user}', [UserController::class, 'delete'])->name('master-data.user.delete');
         });
 
+        Route::prefix('/menu-setting')->group(function (Router $router) {
+            $router->get('/', [MenuSettingController::class, 'index'])->name('menu-setting.index');
+            $router->match(['get', 'post'], '/create', [MenuSettingController::class, 'create'])->name('menu-setting.create');
+            $router->match(['get', 'put'], '/{menu}/edit', [MenuSettingController::class, 'edit'])->name('menu-setting.edit');
+            $router->delete('/{menu}', [MenuSettingController::class, 'delete'])->name('menu-setting.delete');
+        });
+
         Route::prefix('/post')->group(function (Router $router) {
             $router->get('/', [PostController::class, 'index'])->name('post.index');
             $router->match(['get', 'post'], '/create', [PostController::class, 'create'])->name('post.create');
@@ -77,5 +83,8 @@ Route::middleware(['auth'])->prefix('/{context?}')->group(function (Router $rout
         });
     });
 
-
 });
+
+Route::get('/login', [AuthenticationController::class, 'login_page'])->name('auth.login');
+Route::post('/login', [AuthenticationController::class, 'authentication']);
+Route::get('/{menu:slug}', [PublicsPostController::class, 'page'])->name('public.posts');

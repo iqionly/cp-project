@@ -1,36 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\MasterData;
+namespace App\Http\Controllers\Publics;
 
 use App\Http\Controllers\Controller;
-use App\Models\MasterData\Member;
+use App\Models\MenuPost;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-class MemberController extends Controller
+class PostController extends Controller
 {
-    protected $nextNumber = 0;
-
-    protected function getNumber()
+    public function page(Request $request, MenuPost $menu)
     {
-        if($this->nextNumber > 0) {
-            return str_pad($this->nextNumber++, 5, "0", STR_PAD_LEFT);
-        }
+        $menu->load(['post', 'post.user']);
 
-        $this->nextNumber = DB::table('members')->count() + 1;
-
-        return $this->getNumber();
-    }
-
-    public function index(Request $request)
-    {
-        return view('pages.masterdata.member_index', [
-            'data' => Member::with('user')->paginate(
-                $request->input('limit'),
-                ['*'],
-                'page',
-                (int) $request->input('page', 1),
-            )
+        return view('pages.publics.post', [
+            'post' => $menu->post,
+            'author' => $menu->post->getRelation('user'),
+            'menu' => $menu,
         ]);
     }
 }

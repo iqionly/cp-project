@@ -12,11 +12,14 @@
                         <form method="post" class="row row-cols-lg-auto g-3 align-items-center">
                             <div class="col-3">
                                 <div class="input-group">
-                                  <input type="text" class="form-control" name="filter_member_first_name" placeholder="Search member" aria-label="Search member" value="{{ request()->filter_member_first_name }}">
-                                  <button class="btn btn-outline-secondary" type="submit">SEARCH</button>
+                                    <input type="text" class="form-control" name="filter_member_first_name"
+                                        placeholder="Search member" aria-label="Search member"
+                                        value="{{ request()->filter_member_first_name }}">
+                                    <button class="btn btn-outline-secondary" type="submit">SEARCH</button>
                                 </div>
                             </div>
-                            <div class="col-3"><a href="{{ route('contrib.create') }}" class="btn btn-primary btn-sm">UPLOAD PAYMENTS</a></div>
+                            <div class="col-3"><a href="{{ route('contrib.create') }}"
+                                    class="btn btn-primary btn-sm">UPLOAD PAYMENTS</a></div>
                         </form>
                     </div>
                 </div>
@@ -52,7 +55,6 @@
                                             <span class="badge text-bg-secondary">NOT YET</span>
                                         @elseif($pay->partially)
                                             <span class="badge text-bg-warning">PARTIAL</span>
-
                                         @endif
                                     </td>
                                     <td>{{ $pay->member->full_name }}</td>
@@ -86,6 +88,18 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Payment History</h3>
+                    <div class="card-tools">
+                        <form method="post" class="row row-cols-lg-auto g-3 align-items-center">
+                            <div class="col-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="filter_member_first_name"
+                                        placeholder="Search member" aria-label="Search member"
+                                        value="{{ request()->filter_member_first_name }}">
+                                    <button class="btn btn-outline-secondary" type="submit">SEARCH</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 <div class="card-body p-0">
                     <table class="table table-striped">
@@ -127,40 +141,42 @@
                                         @can('role', ['admin'])
                                             @switch($payment->status)
                                                 @case('REVIEWED')
-                                                <form action="{{ route('contrib.admin.review', [$payment->id, true]) }}"
-                                                    method="post">
-                                                    @csrf
-                                                    <input type="submit" value="APPROVE" class="btn btn-sm btn-success m-1" />
-                                                </form>
-                                                <form action="{{ route('contrib.admin.review', [$payment->id, false]) }}"
-                                                    method="post">
-                                                    @csrf
-                                                    <input type="submit" value="REJECT" class="btn btn-sm btn-danger m-1" />
-                                                </form>
+                                                    <form action="{{ route('contrib.admin.review', [$payment->id, true]) }}"
+                                                        method="post">
+                                                        @csrf
+                                                        <input type="submit" value="APPROVE" class="btn btn-sm btn-success m-1" />
+                                                    </form>
+                                                    <form action="{{ route('contrib.admin.review', [$payment->id, false]) }}"
+                                                        method="post">
+                                                        @csrf
+                                                        <input type="submit" value="REJECT" class="btn btn-sm btn-danger m-1" />
+                                                    </form>
                                                 @break
+
                                                 @case('REJECTED')
                                                 @case(null)
-                                                <form action="{{ route('contrib.admin.review', [$payment->id, true]) }}"
-                                                    method="post">
-                                                    @csrf
-                                                    <input type="submit" value="VERIFY" class="btn btn-sm btn-success m-1" />
-                                                </form>
-                                                <form action="{{ route('contrib.admin.review', [$payment->id, false]) }}"
-                                                    method="post">
-                                                    @csrf
-                                                    <input type="submit" value="REJECT" class="btn btn-sm btn-danger m-1" />
-                                                </form>
+                                                    <form action="{{ route('contrib.admin.review', [$payment->id, true]) }}"
+                                                        method="post">
+                                                        @csrf
+                                                        <input type="submit" value="VERIFY" class="btn btn-sm btn-success m-1" />
+                                                    </form>
+                                                    <form action="{{ route('contrib.admin.review', [$payment->id, false]) }}"
+                                                        method="post">
+                                                        @csrf
+                                                        <input type="submit" value="REJECT" class="btn btn-sm btn-danger m-1" />
+                                                    </form>
                                                 @break
+
                                                 @case('APPROVED')
-                                                <form action="{{ route('contrib.admin.review', [$payment->id, false]) }}"
-                                                    method="post">
-                                                    @csrf
-                                                    <input type="submit" value="REJECT" class="btn btn-sm btn-danger m-1" />
-                                                </form>
+                                                    <form action="{{ route('contrib.admin.review', [$payment->id, false]) }}"
+                                                        method="post">
+                                                        @csrf
+                                                        <input type="submit" value="REJECT" class="btn btn-sm btn-danger m-1" />
+                                                    </form>
                                                 @break
                                             @endswitch
                                         @endcan
-                                            @if(empty($payment->status) || Auth::user()->can('role', ['admin']) )
+                                        @if (empty($payment->status) || Auth::user()->can('role', ['admin']))
                                             <form action="{{ route('contrib.payments.destroy', [$payment->id]) }}"
                                                 method="post">
                                                 @method('DELETE')
@@ -170,18 +186,18 @@
                                         @endif
                                     </td>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="99">No payments mades.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                    {{ $payments->links() }}
+                                @empty
+                                    <tr>
+                                        <td colspan="99">No payments mades.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                        {{ $payments->links() }}
+                    </div>
                 </div>
             </div>
-        </div>
 
-    </div>
-    <!--end::Row-->
-@endsection
+        </div>
+        <!--end::Row-->
+    @endsection

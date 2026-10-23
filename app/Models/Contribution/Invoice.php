@@ -3,22 +3,26 @@
 namespace App\Models\Contribution;
 
 use App\Models\MasterData\Member;
+use App\Models\Traits\FormatDate;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
-        'member_id',
-        'invoice_number',
-        'period_start',
-        'issued_at',
-        'due_at',
-        'status',
-        'notes',
+    'member_id',
+    'invoice_number',
+    'period_start',
+    'issued_at',
+    'due_at',
+    'status',
+    'notes',
 ])]
 class Invoice extends Model
 {
+    use FormatDate;
+
     protected function casts(): array
     {
         return [
@@ -43,6 +47,16 @@ class Invoice extends Model
         return $this->hasMany(
             PaymentAllocation::class
         );
+    }
+
+    protected function dueAt(): Attribute
+    {
+        return $this->makeAttribute('medium');
+    }
+
+    protected function periodStart(): Attribute
+    {
+        return $this->makeAttribute('medium');
     }
 
     public function getTotalAmountAttribute(): string

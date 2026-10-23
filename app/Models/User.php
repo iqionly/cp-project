@@ -6,13 +6,13 @@ namespace App\Models;
 
 use App\Models\Authorizations\Role;
 use App\Models\MasterData\Member;
+use App\Models\Traits\FormatDate;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -24,7 +24,7 @@ use Illuminate\Support\Str;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use FormatDate, HasFactory, Notifiable;
 
     /**
      * Get the attributes that should be cast.
@@ -42,6 +42,7 @@ class User extends Authenticatable
     public function verify(bool $y = true)
     {
         $this->email_verified_at = $y ? date('Y-m-d H:i:s') : null;
+
         return $this;
     }
 
@@ -58,15 +59,14 @@ class User extends Authenticatable
     public function maskedEmail(): Attribute
     {
         return Attribute::make(
-            get: fn() => Str::mask($this->email, '*', 4),
+            get: fn () => Str::mask($this->email, '*', 4),
         );
     }
 
     public function isVerified(): Attribute
     {
         return Attribute::make(
-            get: fn() => !empty($this->email_verified_at),
+            get: fn () => ! empty($this->email_verified_at),
         );
     }
-
 }

@@ -4,27 +4,29 @@ namespace App\Models\Traits;
 
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Support\Carbon;
 
 trait FormatDate
 {
-    private string $date_format = 'D, d F Y H:i:s';
+    private string $default_date_format = 'D, d F Y H:i:s';
+
+    private string $medium_date_format = 'D, d F Y';
+
+    private string $long_date_format = 'D, d-M-y H:i:s';
 
     /**
      * Prepare a date for array / JSON serialization.
      *
-     * @param  \DateTimeInterface  $date
      * @return string
      */
     protected function serializeDate(DateTimeInterface $date)
     {
-        return $date->format($this->date_format);
+        return $date->format($this->default_date_format);
     }
 
-    private function makeAttribute()
+    private function makeAttribute($format = 'default')
     {
         return Attribute::make(
-            get: fn (mixed $value) => date($this->date_format, strtotime($value)),
+            get: fn (mixed $value) => date($this->{$format.'_date_format'}, strtotime($value)),
         );
     }
 
