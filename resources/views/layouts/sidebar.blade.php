@@ -5,7 +5,8 @@
         <!--begin::Brand Link-->
         <a href="/" class="brand-link">
             <!--begin::Brand Image-->
-            <img src="" alt="Logo Club" class="brand-image opacity-75 shadow" />
+            <img src="{{ url('/assets/logo1.jpeg')}}" alt="CLUB MGMT" width="30" height="30" class="brand-image opacity-75 shadow me-2" />
+            <img src="{{ url('/assets/logo2.jpeg')}}" alt="CLUB MGMT" width="30" height="30" class="brand-image opacity-75 shadow me-2" />
             <!--end::Brand Image-->
             <!--begin::Brand Text-->
             <span class="brand-text fw-light">Mgmt Club</span>
