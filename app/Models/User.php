@@ -59,7 +59,7 @@ class User extends Authenticatable
     public function maskedEmail(): Attribute
     {
         return Attribute::make(
-            get: fn () => Str::mask($this->email, '*', 4),
+            get: fn () => $this->email ? Str::mask($this->email, '*', 4) : '-',
         );
     }
 
@@ -68,5 +68,17 @@ class User extends Authenticatable
         return Attribute::make(
             get: fn () => ! empty($this->email_verified_at),
         );
+    }
+
+    public function isProfileComplete(): bool
+    {
+        if (empty($this->email) || ! $this->member) {
+            return false;
+        }
+
+        return ! empty($this->member->first_name)
+            && ! empty($this->member->last_name)
+            && ! empty($this->member->address)
+            && ! empty($this->member->phone_number);
     }
 }

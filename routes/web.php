@@ -6,6 +6,7 @@ use App\Http\Controllers\MasterData\MemberController;
 use App\Http\Controllers\MasterData\UserController;
 use App\Http\Controllers\Members\ContributionController;
 use App\Http\Controllers\Members\InvoiceController;
+use App\Http\Controllers\Members\ProfileController;
 use App\Http\Controllers\MenuSettingController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\Publics\EventController as PublicsEventController;
@@ -23,6 +24,8 @@ Route::get('/events/{event}', [PublicsEventController::class, 'show'])->name('pu
 Route::middleware(['auth'])->prefix('/{context?}')->group(function (Router $router) {
     $router->get('/home', [DashboardController::class, 'home'])->name('home');
     $router->get('/logout', [AuthenticationController::class, 'deauthentication'])->name('auth.logout');
+
+    Route::match(['get', 'put', 'post'], '/profile', [ProfileController::class, 'index'])->name('member.profile')->middleware('role:member,admin');
 
     Route::match(['get', 'post'], '/contrib', [ContributionController::class, 'index'])->name('contrib.index')->middleware('role:member,admin');
     Route::match(['get', 'post'], '/contrib/create/{member?}', [ContributionController::class, 'create'])->name('contrib.create')->middleware('role:member,admin');
@@ -48,6 +51,7 @@ Route::middleware(['auth'])->prefix('/{context?}')->group(function (Router $rout
     Route::middleware('role:admin')->group(function () {
         Route::prefix('/master-data')->group(function (Router $router) {
             $router->get('/member', [MemberController::class, 'index'])->name('master-data.member.list');
+            $router->match(['get', 'post'], '/member/create', [MemberController::class, 'create'])->name('master-data.member.create');
             $router->match(['get', 'put'], '/member/{member}/edit', [MemberController::class, 'edit'])->name('master-data.member.edit');
             $router->delete('/member/{member}', [MemberController::class, 'delete'])->name('master-data.member.delete');
 

@@ -24,7 +24,7 @@
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb float-sm-end">
                                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                        @foreach ($page_breadcumb as $title)
+                                        @foreach ($page_breadcumb ?? [] as $title)
                                             <li class="breadcrumb-item {{ $loop->last ? 'active' : null }}"
                                                 aria-current="page">{{ $title }}</li>
                                         @endforeach

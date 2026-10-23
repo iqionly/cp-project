@@ -20,12 +20,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 #[Fillable([
+    'member_code',
     'first_name',
     'last_name',
     'gender',
     'birth_date',
     'address',
-    'nik'.
+    'nik',
     'plate_number',
     'phone_number',
     'emergency_person',
@@ -65,34 +66,35 @@ class Member extends Model
      * Get the user's first name.
      *
      * @param  string  $value
-     * @return string
      */
-    public function getFirstNameAttribute($value)
+    public function getFirstNameAttribute($value): ?string
     {
-        return ucfirst($value);
+        return $value ? ucfirst($value) : null;
     }
 
-    public function getLastNameAttribute($value)
+    public function getLastNameAttribute($value): ?string
     {
-        return ucfirst($value);
+        return $value ? ucfirst($value) : null;
     }
 
     public function getFullNameAttribute()
     {
-        return $this->first_name.' '.$this->last_name;
+        $fullName = trim(($this->first_name ?? '').' '.($this->last_name ?? ''));
+
+        return $fullName !== '' ? $fullName : ($this->user?->name ?? 'New Member');
     }
 
     public function gender(): Attribute
     {
         return Attribute::make(
-            set: fn (string $value) => strtoupper($value),
+            set: fn (?string $value) => $value ? strtoupper($value) : null,
         );
     }
 
     public function maskedPhoneNumber(): Attribute
     {
         return Attribute::make(
-            get: fn () => Str::mask($this->phone_number, '*', 3, strlen($this->phone_number) - 5),
+            get: fn () => ! empty($this->phone_number) ? Str::mask($this->phone_number, '*', 3, max(0, strlen($this->phone_number) - 5)) : '-',
         );
     }
 }

@@ -72,6 +72,12 @@
                 @endcan
                 @can('role', ['admin', 'member'])
                     <li class="nav-item">
+                        <a href="{{ route('member.profile') }}" class="nav-link  {{ request()->routeIs('member.profile*') ? 'active' : null }}">
+                            <i class="nav-icon bi bi-person-circle"></i>
+                            <p>My Profile</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{{ route('contrib.index') }}" class="nav-link  {{ request()->routeIs('contrib.*') ? 'active' : null }}">
                             <i class="nav-icon bi bi-cash-coin"></i>
                             <p>Invoices</p>

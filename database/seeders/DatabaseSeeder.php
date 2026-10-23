@@ -84,5 +84,7 @@ class DatabaseSeeder extends Seeder
         $journal->code = 'FEE-';
         $journal->default_amount = 50000;
         $journal->save();
+
+        $this->call(ContributionSeeder::class);
     }
 }

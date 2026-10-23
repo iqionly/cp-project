@@ -103,7 +103,7 @@
                     @endforeach
                     <!--begin::Menu Footer-->
                     <li class="user-footer">
-                        <a href="#" class="btn btn-outline-secondary">Profile</a>
+                        <a href="{{ route('member.profile') }}" class="btn btn-outline-secondary">Profile</a>
                         <a href="{{ route('auth.logout') }}" class="btn btn-outline-danger float-end">Sign out</a>
                     </li>
                     <!--end::Menu Footer-->
