@@ -13,11 +13,11 @@
             @endif
 
             <div class="card mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-header">
                     <h3 class="card-title fw-bold">List Member</h3>
                     <div class="card-tools">
                         <a href="{{ route('master-data.member.create') }}" class="btn btn-primary btn-sm">
-                            <i class="bi bi-person-plus-fill me-1"></i> CREATE MEMBER
+                            CREATE MEMBER
                         </a>
                     </div>
                 </div>

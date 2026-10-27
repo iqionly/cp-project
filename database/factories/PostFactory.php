@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Post;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -27,8 +28,8 @@ class PostFactory extends Factory
         return [
             'title' => substr(fake()->paragraph, 0, 45),
             'description' => fake()->text(400),
-            'reviewed_at' => rand(0, 10) > 7 ? $reviewed = date('Y-m-d') : null,
-            'published_at' => rand(0, 10) > 7 && $reviewed ? date('Y-m-d') : null,
+            'reviewed_at' => rand(0, 10) > 7 ? $reviewed = date('Y-m-d H:i:s') : null,
+            'published_at' => rand(0, 10) > 7 && $reviewed ? new Carbon()->addDays(7)->format('Y-m-d H:i:s') : null,
         ];
     }
 

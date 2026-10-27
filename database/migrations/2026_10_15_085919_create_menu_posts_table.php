@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('menu_posts', function(Blueprint $table) {
             $table->unsignedBigInteger('post_id')->primary();
             $table->string('slug')->nullable();
-            $table->boolean('default')->default(false);
+            $table->unsignedInteger('default')->default(100);
             $table->string('menu_title')->nullable();
             $table->string('icons')->nullable();
 

@@ -20,7 +20,7 @@
         <ul class="navbar-nav ms-auto">
 
             <!--begin::Notifications Dropdown Menu-->
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown d-none">
                 <a class="nav-link" data-bs-toggle="dropdown" href="#" aria-label="Notifications: 15 unread">
                     <i class="bi bi-bell-fill"></i>
                     <span class="navbar-badge badge text-bg-warning">15</span>
@@ -93,9 +93,7 @@
             <!--begin::User Menu Dropdown-->
             <li class="nav-item dropdown user-menu">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                    <img src="./assets/img/user2-160x160.jpg" class="user-image rounded-circle shadow"
-                        alt="{{ substr($user_logged_name, 0, 1) }}" />
-                    <span class="d-none d-md-inline">{{ substr($user_logged_name, 0, 1) }}</span>
+                    <span class="badge text-bg-secondary d-md-inline">{{ substr($user_logged_name, 0, 1) }}</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end user-roles">
                     @foreach(request()->user()->roles as $role)

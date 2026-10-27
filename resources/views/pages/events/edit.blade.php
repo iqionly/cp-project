@@ -18,17 +18,17 @@
 
                             <div class="col-6 mb-3">
                                 <label for="title" class="form-label">Title</label>
-                                <input type="text" class="form-control" id="title" aria-describedby="title" name="post[title]" value="{{ $old ? $old->post->title : $data->post->title }}" />
+                                <input type="text" class="form-control" id="title" aria-describedby="title" name="post[title]" value="{{ old('post')['title'] ?? $data->post->title }}" />
                             </div>
 
                             <div class="col-6 mb-3">
                                 <label for="location" class="form-label">Location</label>
-                                <input type="text" class="form-control" id="location" aria-describedby="location" name="location" value="{{ $old ? $old->location : $data->location }}" />
+                                <input type="text" class="form-control" id="location" aria-describedby="location" name="location" value="{{ old('location') ?? $data->location }}" />
                             </div>
 
                             <div class="col-12 mb-3">
                                 <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control" id="description" aria-describedby="description" name="post[description]" rows="7">{{ $old ? $old->post->description : $data->post->description }}</textarea>
+                                <textarea class="form-control" id="description" aria-describedby="description" name="post[description]" rows="7">{{ old('post')['description'] ?? $data->post->description }}</textarea>
                             </div>
 
                         </div>
@@ -43,13 +43,13 @@
                                     name="event_period"
                                     class="form-control"
                                     placeholder="Select a reporting period"
-                                    value="{{ $old ? $old->event_period : $data->event_period }}"
+                                    value="{{ old('event_period') ?? $data->event_period }}"
                                 />
                                 <div class="form-text">Pick a start date, then an end date.</div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="max-attendant" class="form-label">Max Attendant</label>
-                                <input type="number" id="max-attendant" name="max_attendant" class="form-control" placeholder="Input max attendant"  value="{{ $old ? $old->max_attendant : ($data->max_attendant ?? 0) }}"/>
+                                <input type="number" id="max-attendant" name="max_attendant" class="form-control" placeholder="Input max attendant"  value="{{ old('max_attendant') ?? ($data->max_attendant ?? 0) }}"/>
                             </div>
 
                         </div>
@@ -60,7 +60,7 @@
                                 <img src="{{ $data->post->path_featured_image }}" alt="{{ $data->post->path_featured_image }}" class="img-thumbnail w-100 mb-3"/>
                                 <label for="image" class="form-label">Featured Image</label>
                                 <input type="file" class="form-control" id="image" aria-describedby="image"
-                                    name="post[path_featured_image]" value="{{ $old ? $old->path_featured_image : $data->post->path_featured_image }}" />
+                                    name="post[path_featured_image]" value="" />
                             </div>
 
                             <div class="col mb-3 row">
@@ -79,7 +79,7 @@
 
                             <div class="col-12 mb-3" style="height:fit-content;">
                                 <label for="image" class="form-label">Content Post</label>
-                                <input type="hidden" name="post[contents]" id="contents" value="{{ $old ? $old->post->contents : $data->post->contents }}"/>
+                                <input type="hidden" name="post[contents]" id="contents" value="{{ old('post')['contents'] ?? $data->post->contents }}"/>
                                 <div id="editor" style="height:500px;"></div>
                             </div>
 
@@ -124,7 +124,11 @@
 <script>
     (function() {
         const quill = new Quill('#editor', {
-            theme: 'snow'
+            theme: 'snow',
+            modules: {
+                syntax: true,
+                toolbar: toolbarOptions
+            },
         });
 
         if(document.getElementById('contents').value) {

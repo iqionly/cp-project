@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\MasterData\MemberController;
 use App\Http\Controllers\MasterData\UserController;
 use App\Http\Controllers\Members\ContributionController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Publics\EventController as PublicsEventController;
 use App\Http\Controllers\Publics\HomeController;
 use App\Http\Controllers\Publics\PostController as PublicsPostController;
 use App\Http\Controllers\Securities\AuthenticationController;
+use App\Http\Controllers\SystemSettingController;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 
@@ -66,6 +68,12 @@ Route::middleware(['auth'])->prefix('/{context?}')->group(function (Router $rout
             $router->match(['get', 'put'], '/{menu}/edit', [MenuSettingController::class, 'edit'])->name('menu-setting.edit');
             $router->delete('/{menu}', [MenuSettingController::class, 'delete'])->name('menu-setting.delete');
         });
+
+        Route::prefix('/settings')->group(function (Router $router) {
+            $router->get('/', [SystemSettingController::class, 'setting'])->name('settings');
+        });
+
+        Route::resource('gallery', GalleryController::class)->except(['store', 'show', 'update']);
 
         Route::prefix('/post')->group(function (Router $router) {
             $router->get('/', [PostController::class, 'index'])->name('post.index');

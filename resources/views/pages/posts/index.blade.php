@@ -9,7 +9,17 @@
                 <div class="card-header">
                     <h3 class="card-title">List Posts</h3>
                     <div class="card-tools">
-                        <a href="{{ route('post.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+                        <form method="get" class="row row-cols-lg-auto g-3 align-items-center">
+                            <div class="col-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="filter"
+                                        placeholder="Search member" aria-label="Search posts..."
+                                        value="{{ request()->filter }}">
+                                    <button class="btn btn-outline-secondary" type="submit">SEARCH</button>
+                                </div>
+                            </div>
+                            <a href="{{ route('post.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+                        </form>
                     </div>
                 </div>
                 <!-- /.card-header -->

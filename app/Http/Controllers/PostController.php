@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -12,6 +14,10 @@ class PostController extends Controller
     {
         return view('pages.posts.index', [
             'data' => Post::with('user')
+                ->when($request->has('filter'), function(Builder $query) use ($request) {
+                    $query->where('title', 'like', $request->get('filter') . '%')
+                        ->where('description', 'like', '%' . $request->get('filter') . '%');
+                })
                 ->orderBy('created_at', 'desc')
                 ->paginate(
                     $request->input('limit'),
@@ -28,7 +34,7 @@ class PostController extends Controller
             $request->validate([
                 'title' => ['required', 'string'],
                 'description' => ['required', 'string'],
-                'contents' => ['string', 'nullable'],
+                'contents' => ['string', 'nullable', 'min:50'],
                 'path_featured_image' => ['image'],
             ]);
 
@@ -80,7 +86,7 @@ class PostController extends Controller
             $request->validate([
                 'title' => ['required', 'string'],
                 'description' => ['required', 'string'],
-                'contents' => ['string'],
+                'contents' => ['string', 'nullable', 'min:50'],
                 'path_featured_image' => ['image'],
             ]);
 
@@ -114,7 +120,9 @@ class PostController extends Controller
             $post->save();
 
             if ($request->has('is_menu')) {
-                $post->menu_post()->create([
+                $post->menu_post()->updateOrCreate([
+                    'post_id' => $post->id,
+                ], [
                     'default' => DB::table('menu_posts')->max('default') + 100,
                     'menu_title' => $post->title,
                 ]);
@@ -129,6 +137,10 @@ class PostController extends Controller
 
     public function delete(Request $request, Post $post)
     {
+        foreach($post->path_images as $img) {
+            Storage::disk('public')->delete($img);
+        }
+        Storage::disk('public')->delete($post->getRawOriginal('path_featured_image'));
         if ($post->delete()) {
             return redirect()->back();
         }

@@ -31,18 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('members', function (Blueprint $table) {
-            $table->string('first_name', 16)->nullable(false)->change();
-            $table->string('last_name', 16)->nullable(false)->change();
-            $table->string('gender', 1)->nullable(false)->change();
-            $table->date('birth_date')->nullable(false)->change();
-            $table->string('nik', 16)->nullable(false)->change();
-            $table->string('plate_number', 10)->nullable(false)->change();
-            $table->string('phone_number', 18)->nullable(false)->change();
-        });
-
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('email')->nullable(false)->change();
-        });
+        //
     }
 };

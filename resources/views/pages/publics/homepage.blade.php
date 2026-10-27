@@ -1,35 +1,13 @@
 @extends('layouts.base-topbar')
 
 @section('content')
-    <!--begin::Row-->
-    <div class="row">
-        <div class="col-12">
-            <!--begin::Card-->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Starter Card</h3>
-
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse"
-                            aria-label="Collapse card">
-                            <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
-                            <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
-                        </button>
-                        <button type="button" class="btn btn-tool" data-lte-toggle="card-remove"
-                            aria-label="Remove card">
-                            <i class="bi bi-x-lg"></i>
-                        </button>
-                    </div>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">Start creating your amazing application!</div>
-                <!-- /.card-body -->
-                <div class="card-footer">The footer of the card</div>
-                <!-- /.card-footer -->
-            </div>
-            <!--end::Card-->
+    <!--begin::Card-->
+    <div class="card">
+        <!-- /.card-header -->
+        <div class="card-body">
+            <img src="{{ url('assets/banner1.jpg') }}" style="width:100%;"/>
         </div>
-        <!-- /.col -->
+        <!-- /.card-body -->
     </div>
-    <!--end::Row-->
-@endsection
+    <!--end::Card-->
+    @endsection

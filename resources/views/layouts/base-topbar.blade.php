@@ -21,7 +21,7 @@
                 <!--begin::App Content Header-->
                 <div class="app-content-header">
                     <!--begin::Container-->
-                    <div class="container">
+                    <div class="{{ isset($contentClass) ? $contentClass : 'container-fluid' }}">
                         <!--begin::Row-->
                         <div class="row">
                             @if(!request()->routeIs('public.posts'))
@@ -34,6 +34,9 @@
                                     <ol class="breadcrumb float-sm-end">
                                         <li class="breadcrumb-item"><a href="#">Home</a></li>
                                         @foreach ($page_breadcumb ?? [] as $title)
+                                            @if(empty($title))
+                                                @continue
+                                            @endif
                                             <li class="breadcrumb-item {{ $loop->last ? 'active' : null }}"
                                                 aria-current="page">{{ $title }}</li>
                                         @endforeach
@@ -49,7 +52,7 @@
                 <!--begin::App Content-->
                 <div class="app-content">
                     <!--begin::Container-->
-                    <div class="container-fluid">
+                    <div class="{{ isset($contentClass) ? $contentClass : 'container-fluid' }}">
 
                         <div class="row">
                             <div class="col-md-12">

@@ -18,17 +18,12 @@
 
                             <div class="col-12 mb-3">
                                 <label for="title" class="form-label">Title</label>
-                                <input type="text" class="form-control" id="title" aria-describedby="title" name="title" value="{{ $old ? $old->title : $data->title }}" />
-                            </div>
-
-                            <div class="col-12 mb-3">
-                                <label for="slug" class="form-label">Slug</label>
-                                <input type="text" class="form-control" id="slug" aria-describedby="slug" name="slug" value="{{ $old ? $old->slug : $data->slug }}" />
+                                <input type="text" class="form-control" id="title" aria-describedby="title" name="title" value="{{ old('title') ?? $data->title }}" />
                             </div>
 
                             <div class="col-12 mb-3">
                                 <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control" id="description" aria-describedby="description" name="description" rows="7">{{ $old ? $old->description : $data->description }}</textarea>
+                                <textarea class="form-control" id="description" aria-describedby="description" name="description" rows="7">{{ old('descriptioni') ?? $data->description }}</textarea>
                             </div>
                         </div>
 
@@ -37,7 +32,7 @@
                                 <img src="{{ $data->path_featured_image }}" alt="{{ $data->path_featured_image }}" class="img-thumbnail w-100 mb-3"/>
                                 <label for="image" class="form-label">Featured Image</label>
                                 <input type="file" class="form-control" id="image" aria-describedby="image"
-                                    name="path_featured_image" value="{{ $old ? $old->path_featured_image : $data->path_featured_image }}" />
+                                    name="path_featured_image" value="{{ old('->path_featured_image') ?? $data->path_featured_image }}" />
                             </div>
 
                             <div class="col mb-3 row">
@@ -54,8 +49,8 @@
                         <div class="row">
                             <div class="col-12 mb-3" style="height:fit-content;">
                                 <label for="image" class="form-label">Content Post</label>
-                                <input type="hidden" name="contents" id="contents" value="{{ $old ? $old->contents : $data->contents }}"/>
-                                <div id="editor" style="height:500px;"></div>
+                                <input type="hidden" name="contents" id="contents" value="{{ old('contents') ?? $data->contents }}"/>
+                                <div id="editor" style="height:500px;">{{ old('contents') ?? $data->contents }}</div>
                             </div>
                         </div>
 
@@ -106,7 +101,11 @@
 <script>
     (function() {
         const quill = new Quill('#editor', {
-            theme: 'snow'
+            theme: 'snow',
+            modules: {
+                syntax: true,
+                toolbar: toolbarOptions
+            }
         });
 
         if(document.getElementById('contents').value) {
@@ -117,6 +116,7 @@
             if(quill.root.innerHTML.length == 0) {
                 return;
             }
+            console.log(quill.root.innerHTML);
             document.getElementById('contents').value = quill.root.innerHTML;
         });
 

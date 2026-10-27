@@ -5,12 +5,18 @@
 </script>
 <!--end::Required Plugin(popperjs for Bootstrap 5)--><!--begin::Required Plugin(Bootstrap 5)-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
-<!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
+<!--end::Required Plugin(Bootstrap 5)-->
+
+<!-- begin:Required Highlight.js -->
+<script src="{{ url('assets/highlight/highlight.min.js') }}"></script>
+<!-- end:Required Highlight.js -->
+
+<!--begin::Required Plugin(AdminLTE)-->
 <script src="{{ url('dist/js/adminlte.js') }}"></script>
 <!--end::Required Plugin(AdminLTE)-->
 
 <!-- start:Required Plugin(Quill) -->
-<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js" integrity="sha384-utBUCeG4SYaCm4m7GQZYr8Hy8Fpy3V4KGjBZaf4WTKOcwhCYpt/0PfeEe3HNlwx8" crossorigin="anonymous"></script>
 <!-- end:Required Plugin(Quill) -->
 
 <script src="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/js/tom-select.complete.min.js" integrity="sha384-OgdLxftmuTHirLYFRbvXsKJxgSVqpU4ZdZ07tRiBC+Z4GjtQ5Al0uika0gtMfeQw" crossorigin="anonymous"></script>
@@ -24,6 +30,53 @@
         scrollbarAutoHide: 'leave',
         scrollbarClickScroll: true,
     };
+
+    const onClick = (selector, callback) => {
+        document.querySelector(selector).addEventListener('click', callback);
+    };
+
+    const toolbarOptions = [
+        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+        ['blockquote', 'code-block'],
+        ['link', 'image', 'video', 'formula'],
+
+        [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
+        [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+        [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+        [{ 'direction': 'rtl' }],                         // text direction
+
+        [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+        [{ 'font': [] }],
+        [{ 'align': [] }],
+
+        ['clean']                                         // remove formatting button
+    ];
+
+    const BlockEmbed = Quill.import('blots/block/embed');
+
+    class ImageBlot extends BlockEmbed {
+        static blotName = 'image';
+        static tagName = 'img';
+
+        static create(value) {
+            const node = super.create();
+            node.setAttribute('alt', value.alt);
+            node.setAttribute('src', value.url);
+            return node;
+        }
+
+        static value(node) {
+            return {
+                alt: node.getAttribute('alt'),
+                url: node.getAttribute('src')
+            };
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
 

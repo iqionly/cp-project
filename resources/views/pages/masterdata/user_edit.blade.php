@@ -19,19 +19,19 @@
                             <div class="col-md-6 mb-3">
                                 <label for="name" class="form-label">Name</label>
                                 <input type="text" class="form-control" id="name" aria-describedby="name"
-                                    name="name" value="{{ $old ? $old->name : $data->name }}" />
+                                    name="name" value="{{ old('name') ?? $data->name }}" />
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label for="email" class="form-label">Email</label>
                                 <input type="text" class="form-control" id="email" aria-describedby="email"
-                                    name="email" value="{{ $old ? $old->email : $data->email }}" />
+                                    name="email" value="{{ old('email') ?? $data->email }}" />
                             </div>
 
                             <div class="col-12 mb-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="" name="verified"
-                                        id="verified" {{ $data->is_verified ? 'checked' : null }}>
+                                        id="verified" {{ $data->is_verified ? 'checked'') ?? null }}>
                                     <label class="form-check-label" for="verified">
                                         Verified?
                                     </label>

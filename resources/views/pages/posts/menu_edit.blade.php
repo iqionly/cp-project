@@ -30,13 +30,13 @@
                                 <label for="order" class="form-label">Order Menu</label>
                                 <input type="number" min="0" class="form-control" id="order"
                                     aria-describedby="order" name="order"
-                                    value="{{ $old ? $old->default : $data->default }}" />
+                                    value="{{ old('default') ?? $data->default }}" />
                             </div>
 
                             <div class="col-6 mb-3">
                                 <label for="menu_title" class="form-label">Menu Title</label>
                                 <input type="text" class="form-control" id="menu_title" aria-describedby="menu_title"
-                                    name="menu_title" value="{{ $old ? $old->menu_title : $data->menu_title }}" />
+                                    name="menu_title" value="{{ old('menu_title') ?? $data->menu_title }}" />
                             </div>
 
                             <div class="col-3 mb-3">
@@ -44,18 +44,16 @@
                                 <div class="input-group"></div>
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control" id="icon" aria-describedby="icon"
-                                        name="icon" value="{{ $old ? $old->icons : $data->icons }}" />
-                                    <i class="input-group-text ba {{ $old ? $old->icons : $data->icons }}"></i>
+                                        name="icon" value="{{ old('icons') ?? $data->icons }}" />
+                                    <i class="input-group-text ba {{ old('icons') ?? $data->icons }}"></i>
                                 </div>
                             </div>
 
                             <div class="col-12 mb-3">
                                 <label for="slug" class="form-label">Slug</label>
                                 <input type="text" class="form-control" id="slug" aria-describedby="slug"
-                                    name="slug" value="{{ $old ? $old->slug : $data->slug }}" />
+                                    name="slug" value="{{ old('slug') ?? $data->slug }}" />
                             </div>
-
-
 
                         </div>
 

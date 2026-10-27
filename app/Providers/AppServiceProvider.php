@@ -81,6 +81,7 @@ class AppServiceProvider extends ServiceProvider
             });
 
             View::share('menus', $this->mergerMenu());
+            View::share('method', 'GET');
         }
     }
 
