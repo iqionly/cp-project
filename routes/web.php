@@ -5,13 +5,17 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\MasterData\MemberController;
 use App\Http\Controllers\MasterData\UserController;
+use App\Http\Controllers\Members\AgendaController;
 use App\Http\Controllers\Members\ContributionController;
 use App\Http\Controllers\Members\InvoiceController;
 use App\Http\Controllers\Members\ProfileController;
 use App\Http\Controllers\MenuSettingController;
+use App\Http\Controllers\MerchandiseController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\Publics\EventController as PublicsEventController;
+use App\Http\Controllers\Publics\GalleryController as PublicsGalleryController;
 use App\Http\Controllers\Publics\HomeController;
+use App\Http\Controllers\Publics\MerchandiseController as PublicsMerchandiseController;
 use App\Http\Controllers\Publics\PostController as PublicsPostController;
 use App\Http\Controllers\Securities\AuthenticationController;
 use App\Http\Controllers\SystemSettingController;
@@ -22,12 +26,18 @@ Route::get('/', [HomeController::class, 'home_page'])->name('home_page');
 
 Route::get('/events', [PublicsEventController::class, 'index'])->name('public.events.index');
 Route::get('/events/{event}', [PublicsEventController::class, 'show'])->name('public.events.show');
+Route::get('/merchandise', [PublicsMerchandiseController::class, 'index'])->name('public.merchandise.index');
+Route::get('/gallery', [PublicsGalleryController::class, 'index'])->name('public.gallery.index');
 
 Route::middleware(['auth'])->prefix('/{context?}')->group(function (Router $router) {
     $router->get('/home', [DashboardController::class, 'home'])->name('home');
     $router->get('/logout', [AuthenticationController::class, 'deauthentication'])->name('auth.logout');
 
     Route::match(['get', 'put', 'post'], '/profile', [ProfileController::class, 'index'])->name('member.profile')->middleware('role:member,admin');
+
+    Route::get('/agenda', [AgendaController::class, 'index'])->name('member.agenda')->middleware('role:member,admin');
+    Route::post('/agenda/{event}/register', [AgendaController::class, 'register'])->name('member.agenda.register')->middleware('role:member,admin');
+    Route::delete('/agenda/{event}/unregister', [AgendaController::class, 'unregister'])->name('member.agenda.unregister')->middleware('role:member,admin');
 
     Route::match(['get', 'post'], '/contrib', [ContributionController::class, 'index'])->name('contrib.index')->middleware('role:member,admin');
     Route::match(['get', 'post'], '/contrib/create/{member?}', [ContributionController::class, 'create'])->name('contrib.create')->middleware('role:member,admin');
@@ -73,7 +83,7 @@ Route::middleware(['auth'])->prefix('/{context?}')->group(function (Router $rout
             $router->get('/', [SystemSettingController::class, 'setting'])->name('settings');
         });
 
-        Route::resource('gallery', GalleryController::class)->except(['store', 'show', 'update']);
+        Route::resource('gallery', GalleryController::class)->except(['show', 'update']);
 
         Route::prefix('/post')->group(function (Router $router) {
             $router->get('/', [PostController::class, 'index'])->name('post.index');
@@ -87,6 +97,13 @@ Route::middleware(['auth'])->prefix('/{context?}')->group(function (Router $rout
             $router->match(['get', 'post'], '/create', [EventController::class, 'create'])->name('event.create');
             $router->match(['get', 'put'], '/{event}/edit', [EventController::class, 'edit'])->name('event.edit');
             $router->delete('/{event}', [EventController::class, 'delete'])->name('event.delete');
+        });
+
+        Route::prefix('/merchandise')->group(function (Router $router) {
+            $router->get('/', [MerchandiseController::class, 'index'])->name('merchandise.index');
+            $router->match(['get', 'post'], '/create', [MerchandiseController::class, 'create'])->name('merchandise.create');
+            $router->match(['get', 'put'], '/{merchandise}/edit', [MerchandiseController::class, 'edit'])->name('merchandise.edit');
+            $router->delete('/{merchandise}', [MerchandiseController::class, 'delete'])->name('merchandise.delete');
         });
 
         Route::prefix('/invoices')->group(function (Router $router) {

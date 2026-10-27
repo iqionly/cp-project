@@ -54,7 +54,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique([
-                'invoice_id', 'reminder_type', 'scheduled_at'
+                'invoice_id', 'reminder_type', 'scheduled_at',
             ], 'invoice_reminder_schedule_unique');
 
             $table->index(['status', 'scheduled_at']);

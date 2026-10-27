@@ -20,7 +20,7 @@
             <ul class="navbar-nav">
                 @foreach($menus ?? [] as $menu)
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('public.posts', [$menu->slug])}}">{{ $menu->menu_title }}</a>
+                    <a class="nav-link {{ request()->is($menu->slug) || request()->is($menu->slug.'/*') ? 'active' : '' }}" href="{{ route('public.posts', [$menu->slug])}}">{{ $menu->menu_title }}</a>
                 </li>
                 @endforeach
             </ul>

@@ -14,9 +14,9 @@ class PostController extends Controller
     {
         return view('pages.posts.index', [
             'data' => Post::with('user')
-                ->when($request->has('filter'), function(Builder $query) use ($request) {
-                    $query->where('title', 'like', $request->get('filter') . '%')
-                        ->where('description', 'like', '%' . $request->get('filter') . '%');
+                ->when($request->has('filter'), function (Builder $query) use ($request) {
+                    $query->where('title', 'like', $request->get('filter').'%')
+                        ->where('description', 'like', '%'.$request->get('filter').'%');
                 })
                 ->orderBy('created_at', 'desc')
                 ->paginate(
@@ -137,7 +137,7 @@ class PostController extends Controller
 
     public function delete(Request $request, Post $post)
     {
-        foreach($post->path_images as $img) {
+        foreach ($post->path_images as $img) {
             Storage::disk('public')->delete($img);
         }
         Storage::disk('public')->delete($post->getRawOriginal('path_featured_image'));

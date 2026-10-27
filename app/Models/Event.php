@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(
     'location',
@@ -24,6 +25,16 @@ class Event extends Model
     public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class);
+    }
+
+    public function registrations(): HasMany
+    {
+        return $this->hasMany(EventRegistration::class);
+    }
+
+    public function galleries(): HasMany
+    {
+        return $this->hasMany(Gallery::class);
     }
 
     protected function startAt(): Attribute

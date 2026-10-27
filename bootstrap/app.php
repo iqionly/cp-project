@@ -2,7 +2,6 @@
 
 use App\Http\Middleware\AuthorizeByRole;
 use App\Http\Middleware\ChangeRole;
-use App\Http\Middleware\ExcludeContextParameter;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo('/login');
 
         $middleware->web(append: [
-            \App\Http\Middleware\ChangeRole::class,
+            ChangeRole::class,
         ]);
 
         $middleware->alias([

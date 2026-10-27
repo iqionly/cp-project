@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class InvoiceItem extends Model
 {
-    use HasTimestamps, HasDescription;
+    use HasDescription, HasTimestamps;
 
     public function invoice_journal(): BelongsTo
     {

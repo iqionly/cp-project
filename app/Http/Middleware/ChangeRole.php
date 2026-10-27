@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,9 +18,10 @@ class ChangeRole
     {
         $context = $contextBefore = $request->context;
         $route = $request->route();
-        if($request->query->has('cr')) {
+        if ($request->query->has('cr')) {
             $context = $request->user()->roles->where('id', $request->query->get('cr'))->first()->name;
             URL::defaults(['context' => $context]);
+
             return redirect(url(preg_replace("/^$contextBefore/", $context, $request->path())));
         }
 

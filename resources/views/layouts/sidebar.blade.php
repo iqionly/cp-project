@@ -32,7 +32,7 @@
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false" id="navigation">
 
                 @can('role', ['admin'])
-                    <li class="nav-item {{ request()->routeIs('master-data.*') || request()->routeIs('post.*') || request()->routeIs('event.*') ? 'menu-open' : null }}">
+                    <li class="nav-item {{ request()->routeIs('master-data.*') || request()->routeIs('post.*') || request()->routeIs('event.*') || request()->routeIs('merchandise.*') || request()->routeIs('gallery.*') ? 'menu-open' : null }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-speedometer"></i>
                             <p>
@@ -61,6 +61,18 @@
                                 </a>
                             </li>
                             <li class="nav-item">
+                                <a href="{{ route('merchandise.index') }}" class="nav-link {{ request()->routeIs('merchandise.*') ? 'active' : null }}">
+                                    <i class="nav-icon bi bi-bag-check-fill"></i>
+                                    <p>Merchandise</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('gallery.index') }}" class="nav-link {{ request()->routeIs('gallery.*') ? 'active' : null }}">
+                                    <i class="nav-icon bi bi-images"></i>
+                                    <p>Documentation</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a href="{{ route('master-data.user.list') }}"
                                     class="nav-link {{ request()->routeIs('master-data.user.*') ? 'active' : null }}">
                                     <i class="nav-icon bi bi-people"></i>
@@ -76,6 +88,12 @@
                         <a href="{{ route('member.profile') }}" class="nav-link  {{ request()->routeIs('member.profile*') ? 'active' : null }}">
                             <i class="nav-icon bi bi-person-circle"></i>
                             <p>My Profile</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('member.agenda') }}" class="nav-link  {{ request()->routeIs('member.agenda*') ? 'active' : null }}">
+                            <i class="nav-icon bi bi-calendar2-week"></i>
+                            <p>Agenda Kegiatan</p>
                         </a>
                     </li>
                     <li class="nav-item">

@@ -44,6 +44,26 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::define('role', function (User $user, ...$roles) {
+            $context = request()->attributes->get('context');
+            if ($user->roles()->where('role_grouping', $context)->count() === 0) { // user no longer have access
+                return false;
+            }
+
+            return in_array($context, $roles) ? true : false;
+        });
+
+        Request::macro('context', function () {
+            $user = $this->user();
+            $context = $this->attributes->get('context');
+            $object = $user->roles()->where('role_grouping', $context)->first();
+            if ($object->count() === 0) { // user no longer have access
+                return false;
+            }
+
+            return $object;
+        });
+
         if (! $this->app->runningInConsole()) {
             Paginator::defaultView('vendor/pagination/bootstrap-5');
             Paginator::defaultSimpleView('vendor/pagination/simple-bootstrap-5');
@@ -60,26 +80,6 @@ class AppServiceProvider extends ServiceProvider
 
             unset($req, $rawPath, $paths);
 
-            Gate::define('role', function (User $user, ...$roles) {
-                $context = request()->attributes->get('context');
-                if ($user->roles()->where('role_grouping', $context)->count() === 0) { // user no longer have access
-                    return false;
-                }
-
-                return in_array($context, $roles) ? true : false;
-            });
-
-            Request::macro('context', function () {
-                $user = $this->user();
-                $context = $this->attributes->get('context');
-                $object = $user->roles()->where('role_grouping', $context)->first();
-                if ($object->count() === 0) { // user no longer have access
-                    return false;
-                }
-
-                return $object;
-            });
-
             View::share('menus', $this->mergerMenu());
             View::share('method', 'GET');
         }
@@ -90,8 +90,18 @@ class AppServiceProvider extends ServiceProvider
         return Collection::make([
             new MenuPost([
                 'default' => 50,
-                'menu_title' => 'Events',
+                'menu_title' => 'Kegiatan',
                 'slug' => 'events',
+            ]),
+            new MenuPost([
+                'default' => 60,
+                'menu_title' => 'Dokumentasi',
+                'slug' => 'gallery',
+            ]),
+            new MenuPost([
+                'default' => 70,
+                'menu_title' => 'Merchandise',
+                'slug' => 'merchandise',
             ]),
         ]);
     }

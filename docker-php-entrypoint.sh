@@ -1,8 +1,16 @@
 #!/bin/sh
 set -e
 
-composer update -n 
+cp .env.example .env
 
-php artisan key:generate
+composer install -n --no-cache
 
-apache2-foreground
+if [ ! -f storage/.initialized ]; then
+    php artisan key:generate
+    php artisan storage:link
+    php artisan migrate --seed --force
+
+    touch storage/.initialized
+fi
+
+exec apache2-foreground

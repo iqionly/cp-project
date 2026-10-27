@@ -1,23 +1,29 @@
 name: "cp-mgmt-club"
 
 services:
-  app:
-    build:
-      dockerfile: Dockerfile
-    volumes:
-      - .:/var/www
-    restart: unless-stopped
-    ports:
-      - 7998:80
-      - 7997:443
-    networks:
-      - postgresql_network
-    deploy:
-      resources:
-        limits:
-          cpus: 2
-          memory: 512M
-
-networks:
-  postgresql_network:
-    external: true
+    app:
+        build:
+            dockerfile: Dockerfile
+        volumes:
+            - ./:/var/www
+        restart: unless-stopped
+        ports:
+            - 80:80
+            - 443:443
+        depends_on:
+            db:
+                condition: service_healthy
+    db:
+        image: mariadb:10.11.18-ubi9
+        restart: unless-stopped
+        ports:
+            - "3306:3306"
+        environment:
+            MARIADB_ROOT_PASSWORD: admin
+            MARIADB_DATABASE: laravel
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-padmin"]
+            interval: 5s
+            timeout: 3s
+            retries: 10
+            start_period: 10s

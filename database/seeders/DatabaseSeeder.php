@@ -9,33 +9,37 @@ use App\Models\Gallery;
 use App\Models\MasterData\Member;
 use App\Models\MenuPost;
 use App\Models\Post;
-use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage as FacadesStorage;
-use Pest\Plugins\Tia\Storage;
+use Database\Seeders\MerchandiseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
+
+    private array $events = [];
 
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
-        DB::beginTransaction();
+        if(!file_exists(storage_path('.initialized'))) {
+             DB::beginTransaction();
 
-        $this->init();
-        $this->contrib();
-        $this->postProfile();
-        $this->postStruktur();
-        $this->galleries();
+            $this->init();
+            $this->contrib();
+            $this->postProfile();
+            $this->postStruktur();
+            $this->galleries();
+            $this->call(MerchandiseSeeder::class);
 
-        DB::commit();
+            DB::commit();
+        }
     }
 
     private function init()
@@ -80,7 +84,10 @@ class DatabaseSeeder extends Seeder
         Member::factory(50)->create();
         $posts = Post::factory()->count(50)->for(User::query()->find(1))->create();
         foreach ($posts as $post) {
-            Event::factory()->for($post)->create();
+            $ev = Event::factory()->for($post)->create();
+            if ($ev->getRawOriginal('start_at') >= date('Y-m-d H:i:s')) {
+                $this->events[] = $ev->id;
+            }
             $post->reviewed_at = date('Y-m-d H:i:s');
             $post->published_at = $post->reviewed_at;
             $post->save();
@@ -100,13 +107,11 @@ class DatabaseSeeder extends Seeder
     }
 
     /**
-    *
-    *  Fungsi membuat postingan dan menu profile
-    *
-    */
+     *  Fungsi membuat postingan dan menu profile
+     */
     private function postProfile()
     {
-        $post = new Post();
+        $post = new Post;
         $post->title = 'Profile';
         $post->description = 'District Tiger Cikarang PLUS adalah organisasi club kendaraan bermotor yang bertempat di kabupaten Bekasi. Seperti yang ada tertera pada Namanya, club ini menjadikan motor tiger sebagai tunggangan utamanya. DTC PLUS memiliki basecamp yang terletak di ruko kuning taman Sentosa dan kantor secretariat yang berada di Kompas tambun. Club ini tergabung dalam wadah Honda Tiger Club Indonesia sejak oktober 2004.
 
@@ -130,7 +135,7 @@ DTC PLUS didirikan dengan tujuan untuk mengumpulkan dan menyatukan anggota serta
 
     private function postStruktur()
     {
-        $post = new Post();
+        $post = new Post;
         $post->title = 'Struktur Kepungurusan';
         $post->description = 'District Tiger Cikarang PLUS memiliki anggota kepungurusan yang masing-masing bertugas untuk membantu setiap anggota dan menjaga lingkungan serta kondisi club diantara anggota.';
         $post->path_featured_image = 'galleries/struktur-anggota.png';
@@ -153,19 +158,22 @@ DTC PLUS didirikan dengan tujuan untuk mengumpulkan dan menyatukan anggota serta
     private array $tags = [
         'event',
         'document',
-        'other'
+        'other',
     ];
 
     private function galleries()
     {
         $files = FacadesStorage::disk('public')->allFiles('galleries');
-        foreach($files as $file) {
-            $g = new Gallery();
+        foreach ($files as $key => $file) {
+            $g = new Gallery;
+            if (isset($this->events[$key])) {
+                $g->event_id = $this->events[$key];
+            }
             $g->title = fake()->text(32);
             $g->description = fake()->text(250);
             $g->path_image = $file;
             $g->tags = [
-                $this->tags[rand(0,2)]
+                $this->tags[rand(0, 2)],
             ];
             $g->save();
         }

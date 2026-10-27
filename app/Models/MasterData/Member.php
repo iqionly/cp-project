@@ -5,6 +5,7 @@ namespace App\Models\MasterData;
 use App\Models\Contribution\Invoice;
 use App\Models\Contribution\MemberFeeSetting;
 use App\Models\Contribution\Payment;
+use App\Models\EventRegistration;
 use App\Models\Traits\FormatDate;
 use App\Models\User;
 use Database\Factories\MasterData\MemberFactory;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
@@ -60,6 +62,11 @@ class Member extends Model
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function eventRegistrations(): HasMany
+    {
+        return $this->hasMany(EventRegistration::class);
     }
 
     /**

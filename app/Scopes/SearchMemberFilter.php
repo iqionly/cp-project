@@ -3,7 +3,6 @@
 namespace App\Scopes;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 
 class SearchMemberFilter
@@ -17,18 +16,18 @@ class SearchMemberFilter
 
     public function __invoke(EloquentBuilder $query): void
     {
-        if(!$this->request->isMethod('post')) {
+        if (! $this->request->isMethod('post')) {
             return;
         }
 
-        foreach($this->searchColumns as $key => $col) {
+        foreach ($this->searchColumns as $key => $col) {
             $value = $this->request->get('filter_member_'.$col);
-            if(!$value) {
+            if (! $value) {
                 continue;
             }
 
-            $query->whereHas($key, function(EloquentBuilder $builder) use ($value, $col) {
-                $builder->where($col, 'like', '%' . $value . '%');
+            $query->whereHas($key, function (EloquentBuilder $builder) use ($value, $col) {
+                $builder->where($col, 'like', '%'.$value.'%');
             });
         }
     }

@@ -28,7 +28,7 @@ class EventController extends Controller
      */
     public function show(Request $request, Event $event): View
     {
-        $event->loadMissing(['post', 'post.user']);
+        $event->loadMissing(['post', 'post.user', 'galleries']);
 
         if (! $event->post || empty($event->post->published_at)) {
             abort(404);
@@ -54,7 +54,7 @@ class EventController extends Controller
     private function getActiveAndUpcomingEvents(): Collection
     {
         return Event::query()
-            ->with(['post', 'post.user'])
+            ->with(['post', 'post.user', 'galleries'])
             ->whereHas('post', function (Builder $query) {
                 $query->whereNotNull('published_at');
             })
@@ -62,6 +62,7 @@ class EventController extends Controller
                 $query->where('end_at', '>=', now())
                     ->orWhere('start_at', '>=', now());
             })
+            ->limit(6)
             ->orderBy('start_at', 'asc')
             ->orderBy('id', 'asc')
             ->get();

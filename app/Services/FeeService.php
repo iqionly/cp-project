@@ -12,9 +12,10 @@ class FeeService
 
     public function getFeeActive()
     {
-        if($this->fee_type) {
+        if ($this->fee_type) {
             return $this->fee_type;
         }
+
         // get event dues need to pay now
         return $this->fee_type = FeeType::query()
             ->where('is_active', true)
@@ -23,8 +24,8 @@ class FeeService
 
     public function getMemberFee(Member $member)
     {
-        if(!$this->getFeeActive()) {
-            throw new \Exception("No active fee yet, please contact admin.");
+        if (! $this->getFeeActive()) {
+            throw new \Exception('No active fee yet, please contact admin.');
         }
 
         $set = MemberFeeSetting::firstOrNew([
@@ -32,9 +33,8 @@ class FeeService
             'fee_type_id' => $this->fee_type,
         ], [
             'amount' => $this->fee_type->default_amount,
-            ]);
+        ]);
 
         return $set;
     }
-
 }

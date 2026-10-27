@@ -3,7 +3,6 @@
 namespace App\Models\Contribution;
 
 use App\Models\MasterData\Member;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -29,13 +28,15 @@ class Payment extends Model
 
     public function review(bool $y = true)
     {
-        $this->status = $y ? "REVIEWED" : "REJECTED";
+        $this->status = $y ? 'REVIEWED' : 'REJECTED';
+
         return $this;
     }
 
     public function approve(bool $y = true)
     {
-        $this->status = $y ? "APPROVED" : "REJECTED";
+        $this->status = $y ? 'APPROVED' : 'REJECTED';
+
         return $this;
     }
 

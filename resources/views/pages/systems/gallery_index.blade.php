@@ -1,6 +1,12 @@
 @extends('layouts.base-sidebar')
 
 @section('content')
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
     <!--begin::Card-->
     <div class="card">
         <!--begin::Card Header-->
@@ -11,12 +17,12 @@
                     <div class="col-3">
                         <div class="input-group">
                             <input type="text" class="form-control" name="filter"
-                                placeholder="Search member" aria-label="Search image or tags..."
+                                placeholder="Search image or tags..." aria-label="Search image or tags..."
                                 value="{{ request()->filter }}">
                             <button class="btn btn-outline-secondary" type="submit">SEARCH</button>
                         </div>
                     </div>
-                    <div class="col-3"><a href="{{ route('contrib.create') }}" class="btn btn-primary btn-sm">UPLOAD</a></div>
+                    <div class="col-3"><a href="{{ route('gallery.create') }}" class="btn btn-primary btn-sm"><i class="bi bi-upload me-1"></i> UPLOAD</a></div>
                 </form>
             </div>
         </div>
@@ -36,8 +42,11 @@
                             <figcaption class="card-body d-flex align-items-start gap-2 py-2">
                                 <div class="flex-grow-1 overflow-hidden">
                                     <p class="fw-semibold mb-0 text-truncate">{{ $item->title }}</p>
+                                    @if ($item->event)
+                                        <p class="mb-1"><span class="badge text-bg-info"><i class="bi bi-calendar-event me-1"></i>{{ $item->event->post?->title }}</span></p>
+                                    @endif
                                     <p class="fs-7 text-secondary mb-0">
-                                        {{ $item->filePrettySize() }} · {{ $item->fileDimensions() }} ·
+                                        <i class="bi bi-calendar3 me-1"></i>{{ $item->taken_date }} · {{ $item->filePrettySize() }} ·
                                         @foreach ($item->tags ?? [] as $tag)
                                             <small class="badge badge-small text-bg-primary">{{ $tag }}</small>
                                         @endforeach

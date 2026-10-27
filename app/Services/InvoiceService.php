@@ -6,6 +6,7 @@ use App\Models\Contribution\Invoice;
 use App\Models\Contribution\InvoiceJournal;
 use App\Models\Contribution\MemberFeeSetting;
 use App\Models\MasterData\Member;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -19,11 +20,11 @@ class InvoiceService
         $this->fs = $fs;
     }
 
-    public function createMonthlyInvoice(Member $member, string $period, string $due = null, string $notes = null): Invoice
+    public function createMonthlyInvoice(Member $member, string $period, ?string $due = null, ?string $notes = null): Invoice
     {
         DB::beginTransaction();
 
-        $start = \Carbon\Carbon::parse($period)->startOfMonth();
+        $start = Carbon::parse($period)->startOfMonth();
 
         $end = $start->copy()->endOfMonth();
 
@@ -45,7 +46,7 @@ class InvoiceService
         $journal = InvoiceJournal::query()->first();
 
         $code = 'FEE-';
-        if (!$journal) {
+        if (! $journal) {
             throw ValidationException::withMessages([
                 'fee' => 'Tarif iuran tidak ditemukan.',
             ]);
@@ -68,7 +69,7 @@ class InvoiceService
 
         $invoice->invoice_items()->create([
             'invoice_journal_id' => $journal->id,
-            'description' => $notes ?? 'Iuran Bulan ' . $start->translatedFormat('F Y'),
+            'description' => $notes ?? 'Iuran Bulan '.$start->translatedFormat('F Y'),
             'quantity' => 1,
             'unit_price' => $amount,
             'amount' => $amount,
@@ -79,11 +80,11 @@ class InvoiceService
         return $invoice;
     }
 
-    public static function getNextInvoiceNumber(InvoiceJournal $journal, \Carbon\Carbon $start)
+    public static function getNextInvoiceNumber(InvoiceJournal $journal, Carbon $start)
     {
         return $journal->code
-            . $start->format('Ym')
-            . '-'
-            . Str::upper(Str::random(8));
+            .$start->format('Ym')
+            .'-'
+            .Str::upper(Str::random(8));
     }
 }

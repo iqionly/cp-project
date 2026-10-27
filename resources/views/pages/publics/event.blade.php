@@ -27,18 +27,64 @@
                                 {!! $currentEvent->post->contents !!}
                             </div>
 
-                            <!-- Event Gallery -->
-                            @if (!empty($currentEvent->post->path_images) && count($currentEvent->post->path_images) > 0)
+                            <!-- Event Gallery / Dokumentasi Kegiatan Terkait -->
+                            @if ($currentEvent->galleries->isNotEmpty() || (!empty($currentEvent->post->path_images) && count($currentEvent->post->path_images) > 0))
                                 <div class="border-top pt-3 mt-4">
-                                    <h5 class="fw-bold mb-3">
-                                        <i class="bi bi-images me-2 text-primary"></i>Event Gallery
-                                    </h5>
-                                    <div class="row g-2">
-                                        @foreach ($currentEvent->post->path_images as $image)
-                                            <div class="col-6 col-sm-4 col-md-3">
-                                                <img src="{{ url('storage/' . $image) }}"
-                                                    class="img-thumbnail w-100 object-fit-cover shadow-sm"
-                                                    style="height: 140px;" alt="Gallery image">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 class="fw-bold mb-0">
+                                            <i class="bi bi-images me-2 text-primary"></i>Dokumentasi Kegiatan
+                                        </h5>
+                                        <small class="text-body-secondary">Arahkan kursor pada gambar untuk info</small>
+                                    </div>
+                                    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3">
+                                        @foreach ($currentEvent->galleries as $galleryItem)
+                                            @php
+                                                $hoverTooltip = trim($currentEvent->post->title . ($galleryItem->description ? ' - ' . $galleryItem->description : ($galleryItem->title ? ' - ' . $galleryItem->title : '')));
+                                            @endphp
+                                            <div class="col">
+                                                <div class="card h-100 shadow-sm border-0 overflow-hidden" title="{{ $hoverTooltip }}">
+                                                    <a href="{{ $galleryItem->path_image }}" target="_blank" class="d-block ratio ratio-4x3 overflow-hidden" title="{{ $hoverTooltip }}">
+                                                        <img src="{{ $galleryItem->path_image }}"
+                                                             class="card-img-top object-fit-cover w-100 h-100"
+                                                             alt="{{ $hoverTooltip }}"
+                                                             loading="lazy"
+                                                             style="transition: transform .3s ease;"
+                                                             onmouseover="this.style.transform='scale(1.05)'"
+                                                             onmouseout="this.style.transform='scale(1)'"
+                                                             title="{{ $hoverTooltip }}">
+                                                    </a>
+                                                    <div class="card-footer text-center py-2 px-1 border-0">
+                                                        <small class="text-body-secondary fw-medium">
+                                                            <i class="bi bi-calendar3 me-1"></i>{{ $galleryItem->taken_date }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+
+                                        {{-- Gambar tambahan dari post bila ada --}}
+                                        @foreach ($currentEvent->post->path_images ?? [] as $image)
+                                            @php
+                                                $postHoverTooltip = trim($currentEvent->post->title . ($currentEvent->post->short_description ? ' - ' . $currentEvent->post->short_description : ''));
+                                            @endphp
+                                            <div class="col">
+                                                <div class="card h-100 shadow-sm border-0 overflow-hidden" title="{{ $postHoverTooltip }}">
+                                                    <a href="{{ url('storage/' . $image) }}" target="_blank" class="d-block ratio ratio-4x3 overflow-hidden" title="{{ $postHoverTooltip }}">
+                                                        <img src="{{ url('storage/' . $image) }}"
+                                                             class="card-img-top object-fit-cover w-100 h-100"
+                                                             alt="{{ $postHoverTooltip }}"
+                                                             loading="lazy"
+                                                             style="transition: transform .3s ease;"
+                                                             onmouseover="this.style.transform='scale(1.05)'"
+                                                             onmouseout="this.style.transform='scale(1)'"
+                                                             title="{{ $postHoverTooltip }}">
+                                                    </a>
+                                                    <div class="card-footer bg-white text-center py-2 px-1 border-0">
+                                                        <small class="text-body-secondary fw-medium">
+                                                            <i class="bi bi-calendar3 me-1"></i>{{ $currentEvent->created_at?->format('d M Y') }}
+                                                        </small>
+                                                    </div>
+                                                </div>
                                             </div>
                                         @endforeach
                                     </div>
@@ -204,7 +250,8 @@
                                 <div class="card-tools">
                                     <div class=" row row-cols-lg-auto g-3 align-items-center">
                                         <div class="col-3">
-                                            <span class="badge text-bg-secondary me-3">{{ $allEvents->count() }} Events</span>
+                                            <span class="badge text-bg-secondary me-3">{{ $allEvents->count() }}
+                                                Events</span>
                                         </div>
                                     </div>
                                 </div>
@@ -226,6 +273,9 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($allEvents as $item)
+                                                @if ($loop->iteration >= 6)
+                                                    @break
+                                                @endif
                                                 <tr class="{{ $item->id === $currentEvent->id ? 'table-primary' : '' }}">
                                                     <td>
                                                         <img src="{{ $item->post->path_featured_image }}"
@@ -278,6 +328,12 @@
                                 </div>
                             </div>
                             <!-- /.card-body -->
+                            @if (count($allEvents) > 5)
+                                <div class="card-footer justify-content-between">
+                                    <a href="#" class="col-auto btn btn-outline-secondary">SEE HISTORY</a>
+                                    <a href="#" class="col-auto btn btn-primary float-end">SEE MORE</a>
+                                </div>
+                            @endif
                         </div>
                         <!-- /.card -->
                     </div>

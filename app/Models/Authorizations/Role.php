@@ -9,5 +9,5 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Role extends Model
 {
-    use HasTimestamps, SoftDeletes, HasFactory;
+    use HasFactory, HasTimestamps, SoftDeletes;
 }

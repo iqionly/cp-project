@@ -5,8 +5,6 @@ namespace App\Http\Controllers\MasterData;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -18,17 +16,17 @@ class UserController extends Controller
                 ['*'],
                 'page',
                 (int) $request->input('page', 1),
-            )
+            ),
         ]);
     }
 
     public function edit(Request $request, User $user)
     {
-        if($request->isMethod('put')) {
+        if ($request->isMethod('put')) {
             $request->validate([
                 'name' => ['required', 'string'],
                 'email' => ['required', 'email'],
-                'old_password' => ['nullable', 'current_password:web', 'required_with:password' ],
+                'old_password' => ['nullable', 'current_password:web', 'required_with:password'],
                 'password' => ['nullable', 'confirmed', 'required_with:old_password'],
             ]);
 
@@ -56,9 +54,8 @@ class UserController extends Controller
 
     public function delete(Request $request, User $user)
     {
-        if($user->delete()) {
+        if ($user->delete()) {
             return redirect()->back();
         }
     }
-
 }

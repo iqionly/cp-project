@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('menu_posts', function(Blueprint $table) {
+        Schema::create('menu_posts', function (Blueprint $table) {
             $table->unsignedBigInteger('post_id')->primary();
             $table->string('slug')->nullable();
             $table->unsignedInteger('default')->default(100);
