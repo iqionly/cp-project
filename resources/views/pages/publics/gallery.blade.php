@@ -16,6 +16,7 @@
         <div class="row justify-content-center mb-4">
             <div class="col-md-6">
                 <form action="{{ route('public.gallery.index') }}" method="GET" class="d-flex gap-2">
+                    @csrf
                     <input type="text" name="filter" class="form-control" placeholder="Cari kegiatan atau momen..." value="{{ request('filter') }}">
                     <button class="btn btn-primary" type="submit">
                         <i class="bi bi-search"></i>

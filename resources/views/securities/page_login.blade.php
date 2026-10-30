@@ -18,6 +18,7 @@
                     <p class="login-box-msg">Sign in to start your session</p>
 
                     <form action="{{ route('auth.login') }}" method="post">
+                        @csrf
                         <label class="visually-hidden" for="loginEmail">Email or Member ID</label>
                         <div class="input-group mb-3">
                             <input id="loginEmail" name="user" type="text" class="form-control" placeholder="Email or Member ID" />
