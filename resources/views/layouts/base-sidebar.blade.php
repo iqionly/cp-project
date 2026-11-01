@@ -2,7 +2,7 @@
 
 @section('layouts')
     <!--begin::Body-->
-    <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <body class="layout-fixed sidebar-mini sidebar-expand-lg bg-body-tertiary">
         <!--begin::App Wrapper-->
         <div class="app-wrapper">
             @include('layouts.header')

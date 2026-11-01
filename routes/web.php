@@ -66,6 +66,8 @@ Route::middleware(['auth'])->prefix('/{context?}')->group(function (Router $rout
             $router->match(['get', 'post'], '/member/create', [MemberController::class, 'create'])->name('master-data.member.create');
             $router->match(['get', 'put'], '/member/{member}/edit', [MemberController::class, 'edit'])->name('master-data.member.edit');
             $router->delete('/member/{member}', [MemberController::class, 'delete'])->name('master-data.member.delete');
+            $router->get('/member/{member}/notify-iuran', [MemberController::class, 'notifyIuran'])->name('master-data.member.notify-iuran');
+            $router->get('/member/{member}/notify-event/{event?}', [MemberController::class, 'notifyEvent'])->name('master-data.member.notify-event');
 
             $router->get('/user', [UserController::class, 'index'])->name('master-data.user.list');
             $router->match(['get', 'put'], '/user/{user}/edit', [UserController::class, 'edit'])->name('master-data.user.edit');

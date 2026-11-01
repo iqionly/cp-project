@@ -4,8 +4,10 @@ namespace App\Http\Controllers\MasterData;
 
 use App\Http\Controllers\Controller;
 use App\Models\Authorizations\Role;
+use App\Models\Event;
 use App\Models\MasterData\Member;
 use App\Models\User;
+use App\Services\WhatsAppNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -31,13 +33,19 @@ class MemberController extends Controller
 
     public function index(Request $request)
     {
+        $upcomingEvents = Event::query()
+            ->activeOrUpcoming()
+            ->with('post')
+            ->get();
+
         return view('pages.masterdata.member_index', [
-            'data' => Member::with('user')->paginate(
+            'data' => Member::with(['user', 'invoices.invoice_items', 'invoices.allocations.payment'])->paginate(
                 $request->input('limit'),
                 ['*'],
                 'page',
                 (int) $request->input('page', 1),
             ),
+            'upcomingEvents' => $upcomingEvents,
         ]);
     }
 
@@ -114,5 +122,115 @@ class MemberController extends Controller
         if ($member->delete()) {
             return redirect()->back();
         }
+    }
+
+    /**
+     * Notify member regarding active iuran via WhatsApp.
+     */
+    public function notifyIuran(Request $request, Member $member, WhatsAppNotificationService $waService)
+    {
+        if (! $member->hasValidWhatsAppNumber()) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Member ini belum memiliki nomor WhatsApp yang valid.',
+                ], 422);
+            }
+
+            return back()->with('error', 'Member ini belum memiliki nomor WhatsApp yang valid.');
+        }
+
+        $activeInvoices = $member->getActiveInvoices();
+        if ($activeInvoices->isEmpty()) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Member ini tidak memiliki tagihan iuran yang aktif.',
+                ], 422);
+            }
+
+            return back()->with('info', 'Member ini tidak memiliki tagihan iuran yang aktif.');
+        }
+
+        $selectedInvoice = null;
+        if ($request->filled('invoice_id')) {
+            $selectedInvoice = $activeInvoices->firstWhere('id', (int) $request->input('invoice_id'));
+        }
+
+        $message = $waService->generateIuranMessage($member, $selectedInvoice);
+        $waUrl = $waService->buildWhatsAppUrl($member->formattedWhatsAppNumber(), $message);
+
+        // Record reminder tracking in invoice_reminders
+        if ($selectedInvoice) {
+            $waService->recordInvoiceReminder($selectedInvoice);
+        } else {
+            foreach ($activeInvoices as $inv) {
+                $waService->recordInvoiceReminder($inv);
+            }
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'wa_url' => $waUrl,
+                'phone' => $member->formattedWhatsAppNumber(),
+                'message' => $message,
+                'active_invoices_count' => $activeInvoices->count(),
+                'total_amount' => $member->getTotalActiveIuranAmount(),
+            ]);
+        }
+
+        return redirect()->away($waUrl);
+    }
+
+    /**
+     * Notify member regarding an active/upcoming event via WhatsApp.
+     */
+    public function notifyEvent(Request $request, Member $member, WhatsAppNotificationService $waService, ?Event $event = null)
+    {
+        if (! $member->hasValidWhatsAppNumber()) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Member ini belum memiliki nomor WhatsApp yang valid.',
+                ], 422);
+            }
+
+            return back()->with('error', 'Member ini belum memiliki nomor WhatsApp yang valid.');
+        }
+
+        if (! $event || ! $event->exists) {
+            if ($request->filled('event_id')) {
+                $event = Event::with('post')->find($request->input('event_id'));
+            } else {
+                $event = Event::query()->activeOrUpcoming()->with('post')->first();
+            }
+        }
+
+        if (! $event) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Tidak ada kegiatan/event aktif atau mendatang untuk diinformasikan.',
+                ], 404);
+            }
+
+            return back()->with('error', 'Tidak ada kegiatan/event aktif atau mendatang untuk diinformasikan.');
+        }
+
+        $message = $waService->generateEventMessage($member, $event);
+        $waUrl = $waService->buildWhatsAppUrl($member->formattedWhatsAppNumber(), $message);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'wa_url' => $waUrl,
+                'phone' => $member->formattedWhatsAppNumber(),
+                'message' => $message,
+                'event_title' => $event->post?->title,
+            ]);
+        }
+
+        return redirect()->away($waUrl);
     }
 }

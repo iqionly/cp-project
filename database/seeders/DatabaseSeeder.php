@@ -15,7 +15,6 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage as FacadesStorage;
-use Database\Seeders\MerchandiseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,8 +27,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        if(!file_exists(storage_path('.initialized'))) {
-             DB::beginTransaction();
+        if (! file_exists(storage_path('.initialized'))) {
+            DB::beginTransaction();
 
             $this->init();
             $this->contrib();

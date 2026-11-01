@@ -3,6 +3,16 @@
     <!--begin::Container-->
     <div class="container-fluid">
 
+        <!--begin::Sidebar Toggle-->
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="#" role="button" data-lte-toggle="sidebar" aria-label="Toggle sidebar" title="Toggle sidebar">
+                    <i class="bi bi-list fs-5"></i>
+                </a>
+            </li>
+        </ul>
+        <!--end::Sidebar Toggle-->
+
         <!--begin::Navbar Search-->
         <form class="navbar-search d-none d-md-block ms-3" role="search" action="./pages/search-results.html">
             <label for="navbar-search-input" class="visually-hidden">Search</label>

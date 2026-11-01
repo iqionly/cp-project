@@ -49,6 +49,11 @@ class Invoice extends Model
         );
     }
 
+    public function reminders(): HasMany
+    {
+        return $this->hasMany(InvoiceReminder::class);
+    }
+
     protected function dueAt(): Attribute
     {
         return $this->makeAttribute('medium');
@@ -61,12 +66,24 @@ class Invoice extends Model
 
     public function getTotalAmountAttribute(): string
     {
+        if ($this->relationLoaded('invoice_items')) {
+            return (string) $this->invoice_items->sum('amount');
+        }
+
         return (string) $this->invoice_items()
             ->sum('amount');
     }
 
     public function getPaidAmountAttribute(): string
     {
+        if ($this->relationLoaded('allocations')) {
+            return (string) $this->allocations->filter(function ($allocation) {
+                return $allocation->relationLoaded('payment')
+                    ? $allocation->payment?->status === 'APPROVED'
+                    : $allocation->payment()->where('status', 'APPROVED')->exists();
+            })->sum('amount');
+        }
+
         return (string) $this->allocations()
             ->whereHas('payment', function ($query) {
                 $query->where('status', 'APPROVED');

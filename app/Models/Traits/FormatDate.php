@@ -26,7 +26,7 @@ trait FormatDate
     private function makeAttribute($format = 'default')
     {
         return Attribute::make(
-            get: fn (mixed $value) => date($this->{$format.'_date_format'}, strtotime($value)),
+            get: fn (mixed $value) => ! empty($value) ? date($this->{$format.'_date_format'}, strtotime($value)) : null,
         );
     }
 

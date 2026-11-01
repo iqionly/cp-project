@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Traits\FormatDate;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(
+    'post_id',
     'location',
     'start_at',
     'end_at',
@@ -59,5 +61,17 @@ class Event extends Model
         return Attribute::make(
             get: fn () => substr($this->start_at, 0, -3).' to '.substr($this->end_at, 0, -3),
         );
+    }
+
+    public function scopeActiveOrUpcoming(Builder $query): Builder
+    {
+        return $query->whereHas('post', function ($q) {
+            $q->whereNotNull('published_at');
+        })
+            ->where(function ($q) {
+                $q->where('end_at', '>=', now())
+                    ->orWhere('start_at', '>=', now());
+            })
+            ->orderBy('start_at', 'asc');
     }
 }

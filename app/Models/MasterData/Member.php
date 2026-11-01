@@ -8,6 +8,7 @@ use App\Models\Contribution\Payment;
 use App\Models\EventRegistration;
 use App\Models\Traits\FormatDate;
 use App\Models\User;
+use App\Services\WhatsAppNotificationService;
 use Database\Factories\MasterData\MemberFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
@@ -19,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 #[Fillable([
@@ -103,5 +105,51 @@ class Member extends Model
         return Attribute::make(
             get: fn () => ! empty($this->phone_number) ? Str::mask($this->phone_number, '*', 3, max(0, strlen($this->phone_number) - 5)) : '-',
         );
+    }
+
+    /**
+     * Get all active (unpaid or partially paid) invoices for the member.
+     *
+     * @return Collection<int, Invoice>
+     */
+    public function getActiveInvoices(): Collection
+    {
+        $invoices = $this->relationLoaded('invoices')
+            ? $this->invoices
+            : $this->invoices()->with(['invoice_items', 'allocations.payment'])->get();
+
+        return $invoices->filter(fn (Invoice $invoice) => (float) $invoice->remaining_amount > 0)->values();
+    }
+
+    /**
+     * Check if the member has any active (unpaid) iuran.
+     */
+    public function hasActiveIuran(): bool
+    {
+        return $this->getActiveInvoices()->isNotEmpty();
+    }
+
+    /**
+     * Get total remaining amount of all active iuran.
+     */
+    public function getTotalActiveIuranAmount(): float
+    {
+        return (float) $this->getActiveInvoices()->sum(fn (Invoice $inv) => (float) $inv->remaining_amount);
+    }
+
+    /**
+     * Get the international standard WhatsApp phone number (e.g. 628...).
+     */
+    public function formattedWhatsAppNumber(): ?string
+    {
+        return WhatsAppNotificationService::formatPhoneNumber($this->phone_number);
+    }
+
+    /**
+     * Check if the member has a valid WhatsApp phone number.
+     */
+    public function hasValidWhatsAppNumber(): bool
+    {
+        return $this->formattedWhatsAppNumber() !== null;
     }
 }
