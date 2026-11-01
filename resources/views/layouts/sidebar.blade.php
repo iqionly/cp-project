@@ -32,7 +32,13 @@
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false" id="navigation">
 
                 @can('role', ['admin'])
-                    <li class="nav-item {{ request()->routeIs('master-data.*') || request()->routeIs('post.*') || request()->routeIs('event.*') || request()->routeIs('merchandise.*') || request()->routeIs('gallery.*') ? 'menu-open' : null }}">
+                    <li class="nav-item {{ request()->routeIs('master-data.*') || request()->routeIs('post.*') || request()->routeIs('event.*') || request()->routeIs('merchandise.*') || request()->routeIs('gallery.*') || request()->routeis('home*')  ? 'menu-open' : null }}">
+                        <li class="nav-item">
+                            <a href="{{ route('home') }}" class="nav-link  {{ request()->routeis('home*') ? 'active' : null }}">
+                                <i class="nav-icon bi bi-person-circle"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-speedometer"></i>
                             <p>
@@ -84,6 +90,14 @@
 
                 @endcan
                 @can('role', ['admin', 'member'])
+                    @can('role', ['member'])
+                    <li class="nav-item">
+                        <a href="{{ route('home') }}" class="nav-link  {{ request()->routeis('home*') ? 'active' : null }}">
+                            <i class="nav-icon bi bi-person-circle"></i>
+                            <p>Dashboard</p>
+                        </a>
+                    </li>
+                    @endcan
                     <li class="nav-item">
                         <a href="{{ route('member.profile') }}" class="nav-link  {{ request()->routeIs('member.profile*') ? 'active' : null }}">
                             <i class="nav-icon bi bi-person-circle"></i>
