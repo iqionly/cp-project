@@ -31,7 +31,7 @@
                             <div class="col-12 mb-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="" name="verified"
-                                        id="verified" {{ $data->is_verified ? 'checked'') ?? null }}>
+                                        id="verified" {{ ($data->is_verified ? 'checked': null) ?? null }}>
                                     <label class="form-check-label" for="verified">
                                         Verified?
                                     </label>
