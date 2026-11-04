@@ -37,7 +37,8 @@ class EventController extends Controller
                 'post.contents' => ['string'],
                 'post.path_featured_image' => ['image'],
                 'event_period' => ['required', 'string'],
-                'max_attendant' => ['required', 'integer'],
+                'max_attendant' => ['required', 'integer', "min:1"],
+                'location' => ['required'],
             ]);
 
             $except = [
@@ -68,10 +69,13 @@ class EventController extends Controller
 
             $post->fill(array_merge($dataPost, $uploadedFiles));
 
-            if (! empty($dataEvent['event_period'])) {
+            if (! empty($dataEvent['event_period']) && $dataEvent['event_period'] != 'to') {
                 $expl = explode(' to ', $dataEvent['event_period']);
                 $event->start_at = $expl[0].':00';
                 $event->end_at = $expl[1].':00';
+            } else {
+                $event->start_at = now();
+                $event->end_at = now();
             }
             $event->fill($dataEvent);
 
