@@ -128,16 +128,19 @@
             modules: {
                 syntax: true,
                 toolbar: toolbarOptions
-            },
+            }
         });
 
         if(document.getElementById('contents').value) {
-            const content = JSON.parse(document.getElementById('contents').value);
-            quill.setContents(content);
+            quill.root.innerHTML = document.getElementById('contents').value;
         }
 
         quill.on('text-change', (delta, oldDelta, source) => {
-            document.getElementById('contents').value = JSON.stringify(quill.getContents());
+            if(quill.root.innerHTML.length == 0) {
+                return;
+            }
+            console.log(quill.root.innerHTML);
+            document.getElementById('contents').value = quill.root.innerHTML;
         });
 
         flatpickr('#event-period', {

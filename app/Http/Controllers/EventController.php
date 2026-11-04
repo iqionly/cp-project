@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Post;
+use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 
 class EventController extends Controller
 {
@@ -49,7 +52,7 @@ class EventController extends Controller
             $post->user()->associate($request->user());
 
             $uploadedFiles = [];
-            foreach ($request->file() as $key => $file) {
+            foreach ($request->file() ?? [] as $key => $file) {
                 if (is_array($file)) {
                     foreach ($file as $subkey => $subfile) {
                         $uploadedFiles['path_images'][$subkey] = $subfile->storePublicly('images', 'public');
@@ -93,7 +96,7 @@ class EventController extends Controller
     {
         if ($request->isMethod('put')) {
             $request->validate([
-                'post.title' => ['required', 'string'],
+                'post.title' => ['required', 'string', 'max:45'],
                 'post.description' => ['required', 'string'],
                 'post.contents' => ['string'],
                 'post.path_featured_image' => ['image'],
@@ -114,7 +117,7 @@ class EventController extends Controller
 
             $uploadedFiles = [];
 
-            foreach ($request->file('post') as $key => $file) {
+            foreach ($request->file('post') ?? [] as $key => $file) {
                 if (is_array($file)) {
                     $subFileUploads = $post->path_images;
                     foreach ($file as $subkey => $subfile) {
@@ -134,8 +137,8 @@ class EventController extends Controller
 
             if (! empty($dataEvent['event_period'])) {
                 $expl = explode(' to ', $dataEvent['event_period']);
-                $event->start_at = $expl[0].':00';
-                $event->end_at = $expl[1].':00';
+                $event->start_at = new DateTime($expl[0])->format('Y-m-d H:i:s');
+                $event->end_at = new DateTime($expl[1])->format('Y-m-d H:i:s');
             }
             $event->fill($dataEvent);
 
