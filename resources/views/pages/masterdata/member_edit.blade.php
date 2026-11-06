@@ -47,10 +47,10 @@
                                 <select name="gender" class="form-select">
                                     <option value=""></option>
                                     <option value="M"
-                                        {{ old('gender == 'M') ? 'selected' : ($data->gender == 'M' ? 'selected' : null) }}>
+                                        {{ old('gender') == 'M' ? 'selected' : ($data->gender == 'M' ? 'selected' : null) }}>
                                         Male</option>
                                     <option value="F"
-                                        {{ old('gender == 'F') ? 'selected' : ($data->gender == 'F' ? 'selected' : null) }}>
+                                        {{ old('gender') == 'F' ? 'selected' : ($data->gender == 'F' ? 'selected' : null) }}>
                                         Women</option>
                                 </select>
                             </div>
@@ -77,9 +77,8 @@
                                 <label for="email" class="form-label">Email</label>
                                 <input type="email" class="form-control" id="email" aria-describedby="email"
                                     name="email"
-                                    value="{{ old('email') ?? ($data->user ? $data->user->email') ?? null) }}" />
+                                    value="{{ old('email') ?? ($data->user ? $data->user->email : null) }}" />
                             </div>
-
 
                             <div class="col-12 mb-3">
                                 <label for="address" class="form-label">Address</label>
