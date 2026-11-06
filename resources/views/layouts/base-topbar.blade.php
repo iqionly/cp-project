@@ -18,6 +18,7 @@
             @include('layouts.topbar')
             <!--begin::App Main-->
             <main class="app-main">
+                @if(!request()->routeIs('home_page'))
                 <!--begin::App Content Header-->
                 <div class="app-content-header">
                     <!--begin::Container-->
@@ -26,13 +27,12 @@
                         <div class="row">
                             @if(!request()->routeIs('public.posts'))
                             <div class="col-sm-6">
-                                <h1 class="mb-0 fs-3">{{ isset($page_title) ? $page_title : null }}</h1>
                             </div>
                             @endif
                             <div class="col-sm-{{ request()->routeIs('public.posts') ? 12 : 6 }}">
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb float-sm-end">
-                                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
                                         @foreach ($page_breadcumb ?? [] as $title)
                                             @if(empty($title))
                                                 @continue
@@ -49,6 +49,7 @@
                     <!--end::Container-->
                 </div>
                 <!--end::App Content Header-->
+                @endif
                 <!--begin::App Content-->
                 <div class="app-content">
                     <!--begin::Container-->

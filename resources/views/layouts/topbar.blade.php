@@ -18,10 +18,15 @@
         <!--begin::Collapsible Menu-->
         <div class="collapse navbar-collapse" id="topNavMenu">
             <ul class="navbar-nav">
-                @foreach($menus ?? [] as $menu)
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is($menu->slug) || request()->is($menu->slug.'/*') ? 'active' : '' }}" href="{{ route('public.posts', [$menu->slug])}}">{{ $menu->menu_title }}</a>
+                    <a class="nav-link {{ request()->routeIs('home_page') || request()->is('/') ? 'active' : '' }}" href="{{ url('/') }}">Beranda</a>
                 </li>
+                @foreach($menus ?? [] as $menu)
+                    @if(!empty($menu->slug))
+                        <li class="nav-item">
+                            <a class="nav-link {{ (request()->is($menu->slug) || request()->is($menu->slug.'/*')) && !request()->routeIs('home_page') ? 'active' : '' }}" href="{{ route('public.posts', [$menu->slug])}}">{{ $menu->menu_title }}</a>
+                        </li>
+                    @endif
                 @endforeach
             </ul>
             <ul class="navbar-nav ms-auto">

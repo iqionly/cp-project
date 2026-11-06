@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Gallery;
 use App\Models\Post;
-use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Date;
 
 class EventController extends Controller
 {
@@ -37,7 +36,7 @@ class EventController extends Controller
                 'post.contents' => ['string'],
                 'post.path_featured_image' => ['image'],
                 'event_period' => ['required', 'string'],
-                'max_attendant' => ['required', 'integer', "min:1"],
+                'max_attendant' => ['required', 'integer', 'min:1'],
                 'location' => ['required'],
             ]);
 
@@ -53,15 +52,54 @@ class EventController extends Controller
             $post->user()->associate($request->user());
 
             $uploadedFiles = [];
-            foreach ($request->file() ?? [] as $key => $file) {
-                if (is_array($file)) {
-                    foreach ($file as $subkey => $subfile) {
-                        $uploadedFiles['path_images'][$subkey] = $subfile->storePublicly('images', 'public');
+            $newGalleryPaths = [];
+
+            $filesToProcess = $request->file('post') ?? $request->file() ?? [];
+            foreach ($filesToProcess as $key => $file) {
+                if ($key === 'post' && is_array($file)) {
+                    foreach ($file as $innerKey => $innerFile) {
+                        if (is_array($innerFile)) {
+                            $subFileUploads = $post->path_images ?? [];
+                            foreach ($innerFile as $subkey => $subfile) {
+                                if ($subfile) {
+                                    $path = $subfile->storePublicly('images', 'public');
+                                    $subFileUploads[$subkey] = $path;
+                                    $newGalleryPaths[] = $path;
+                                }
+                            }
+                            $uploadedFiles['path_images'] = $subFileUploads;
+
+                            continue;
+                        }
+                        if ($innerFile) {
+                            $path = $innerFile->storePublicly('images', 'public');
+                            $uploadedFiles[$innerKey] = $path;
+                            $newGalleryPaths[] = $path;
+                        }
                     }
 
                     continue;
                 }
-                $uploadedFiles[$key] = $file->storePublicly('images', 'public');
+
+                if (is_array($file)) {
+                    $subFileUploads = $post->path_images ?? [];
+                    foreach ($file as $subkey => $subfile) {
+                        if ($subfile) {
+                            $path = $subfile->storePublicly('images', 'public');
+                            $subFileUploads[$subkey] = $path;
+                            $newGalleryPaths[] = $path;
+                        }
+                    }
+                    $uploadedFiles['path_images'] = $subFileUploads;
+
+                    continue;
+                }
+
+                if ($file) {
+                    $path = $file->storePublicly('images', 'public');
+                    $uploadedFiles[$key] = $path;
+                    $newGalleryPaths[] = $path;
+                }
             }
 
             $post->review($request->has('post.reviewed'));
@@ -84,6 +122,20 @@ class EventController extends Controller
             $event->post()->associate($post);
 
             $event->save();
+
+            // Masukkan file yang diupload ke tabel galleries dengan tag "event"
+            foreach ($newGalleryPaths as $galleryPath) {
+                Gallery::firstOrCreate(
+                    ['path_image' => $galleryPath],
+                    [
+                        'event_id' => $event->id,
+                        'title' => $post->title ?? 'Dokumentasi Event',
+                        'description' => $post->description,
+                        'tags' => ['event'],
+                        'taken_at' => ! empty($event->start_at) ? date('Y-m-d', strtotime($event->start_at)) : now()->toDateString(),
+                    ]
+                );
+            }
 
             return redirect()->route('event.edit', [
                 'event' => $event->id,
@@ -120,18 +172,54 @@ class EventController extends Controller
             $post = &$event->post;
 
             $uploadedFiles = [];
+            $newGalleryPaths = [];
 
-            foreach ($request->file('post') ?? [] as $key => $file) {
+            $filesToProcess = $request->file('post') ?? $request->file() ?? [];
+            foreach ($filesToProcess as $key => $file) {
+                if ($key === 'post' && is_array($file)) {
+                    foreach ($file as $innerKey => $innerFile) {
+                        if (is_array($innerFile)) {
+                            $subFileUploads = $post->path_images ?? [];
+                            foreach ($innerFile as $subkey => $subfile) {
+                                if ($subfile) {
+                                    $path = $subfile->storePublicly('images', 'public');
+                                    $subFileUploads[$subkey] = $path;
+                                    $newGalleryPaths[] = $path;
+                                }
+                            }
+                            $uploadedFiles['path_images'] = $subFileUploads;
+
+                            continue;
+                        }
+                        if ($innerFile) {
+                            $path = $innerFile->storePublicly('images', 'public');
+                            $uploadedFiles[$innerKey] = $path;
+                            $newGalleryPaths[] = $path;
+                        }
+                    }
+
+                    continue;
+                }
+
                 if (is_array($file)) {
-                    $subFileUploads = $post->path_images;
+                    $subFileUploads = $post->path_images ?? [];
                     foreach ($file as $subkey => $subfile) {
-                        $subFileUploads[$subkey] = $subfile->storePublicly('images', 'public');
+                        if ($subfile) {
+                            $path = $subfile->storePublicly('images', 'public');
+                            $subFileUploads[$subkey] = $path;
+                            $newGalleryPaths[] = $path;
+                        }
                     }
                     $uploadedFiles['path_images'] = $subFileUploads;
 
                     continue;
                 }
-                $uploadedFiles[$key] = $file->storePublicly('images', 'public');
+
+                if ($file) {
+                    $path = $file->storePublicly('images', 'public');
+                    $uploadedFiles[$key] = $path;
+                    $newGalleryPaths[] = $path;
+                }
             }
 
             $post->review($request->has('post.reviewed'));
@@ -148,6 +236,20 @@ class EventController extends Controller
 
             $post->save();
             $event->save();
+
+            // Masukkan file yang diupload ke tabel galleries dengan tag "event"
+            foreach ($newGalleryPaths as $galleryPath) {
+                Gallery::firstOrCreate(
+                    ['path_image' => $galleryPath],
+                    [
+                        'event_id' => $event->id,
+                        'title' => $post->title ?? 'Dokumentasi Event',
+                        'description' => $post->description,
+                        'tags' => ['event'],
+                        'taken_at' => ! empty($event->start_at) ? date('Y-m-d', strtotime($event->start_at)) : now()->toDateString(),
+                    ]
+                );
+            }
         }
 
         return view('pages.events.edit', [

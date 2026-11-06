@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Gallery;
 use App\Models\Post;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -51,15 +52,25 @@ class PostController extends Controller
             $post->user()->associate($request->user());
 
             $uploadedFiles = [];
+            $newGalleryPaths = [];
+
             foreach ($request->file() as $key => $file) {
                 if (is_array($file)) {
                     foreach ($file as $subkey => $subfile) {
-                        $uploadedFiles['path_images'][$subkey] = $subfile->storePublicly('images', 'public');
+                        if ($subfile) {
+                            $path = $subfile->storePublicly('images', 'public');
+                            $uploadedFiles['path_images'][$subkey] = $path;
+                            $newGalleryPaths[] = $path;
+                        }
                     }
 
                     continue;
                 }
-                $uploadedFiles[$key] = $file->storePublicly('images', 'public');
+                if ($file) {
+                    $path = $file->storePublicly('images', 'public');
+                    $uploadedFiles[$key] = $path;
+                    $newGalleryPaths[] = $path;
+                }
             }
 
             $post->review($request->has('reviewed'));
@@ -68,6 +79,20 @@ class PostController extends Controller
             $post->fill(array_merge($data, $uploadedFiles));
 
             $post->save();
+
+            // Masukkan file yang diupload ke tabel galleries dengan tag "document"
+            foreach ($newGalleryPaths as $galleryPath) {
+                Gallery::firstOrCreate(
+                    ['path_image' => $galleryPath],
+                    [
+                        'event_id' => null,
+                        'title' => $post->title ?? 'Dokumentasi Post',
+                        'description' => $post->description,
+                        'tags' => ['document'],
+                        'taken_at' => now()->toDateString(),
+                    ]
+                );
+            }
 
             return redirect()->route('post.edit', [
                 'post' => $post->id,
@@ -99,17 +124,27 @@ class PostController extends Controller
             ]);
 
             $uploadedFiles = [];
+            $newGalleryPaths = [];
+
             foreach ($request->file() as $key => $file) {
                 if (is_array($file)) {
-                    $subFileUploads = $post->path_images;
+                    $subFileUploads = $post->path_images ?? [];
                     foreach ($file as $subkey => $subfile) {
-                        $subFileUploads[$subkey] = $subfile->storePublicly('images', 'public');
+                        if ($subfile) {
+                            $path = $subfile->storePublicly('images', 'public');
+                            $subFileUploads[$subkey] = $path;
+                            $newGalleryPaths[] = $path;
+                        }
                     }
                     $uploadedFiles['path_images'] = $subFileUploads;
 
                     continue;
                 }
-                $uploadedFiles[$key] = $file->storePublicly('images', 'public');
+                if ($file) {
+                    $path = $file->storePublicly('images', 'public');
+                    $uploadedFiles[$key] = $path;
+                    $newGalleryPaths[] = $path;
+                }
             }
 
             $post->review($request->has('reviewed'));
@@ -118,6 +153,20 @@ class PostController extends Controller
             $post->fill(array_merge($data, $uploadedFiles));
 
             $post->save();
+
+            // Masukkan file yang diupload ke tabel galleries dengan tag "document"
+            foreach ($newGalleryPaths as $galleryPath) {
+                Gallery::firstOrCreate(
+                    ['path_image' => $galleryPath],
+                    [
+                        'event_id' => null,
+                        'title' => $post->title ?? 'Dokumentasi Post',
+                        'description' => $post->description,
+                        'tags' => ['document'],
+                        'taken_at' => now()->toDateString(),
+                    ]
+                );
+            }
 
             if ($request->has('is_menu')) {
                 $post->menu_post()->updateOrCreate([
@@ -137,10 +186,12 @@ class PostController extends Controller
 
     public function delete(Request $request, Post $post)
     {
-        foreach ($post->path_images as $img) {
+        foreach ($post->path_images ?? [] as $img) {
             Storage::disk('public')->delete($img);
         }
-        Storage::disk('public')->delete($post->getRawOriginal('path_featured_image'));
+        if ($post->getRawOriginal('path_featured_image')) {
+            Storage::disk('public')->delete($post->getRawOriginal('path_featured_image'));
+        }
         if ($post->delete()) {
             return redirect()->back();
         }

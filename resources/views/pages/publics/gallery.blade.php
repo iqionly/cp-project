@@ -57,7 +57,7 @@
                                      onmouseout="this.style.transform='scale(1)'"
                                      title="{{ $hoverTooltip }}">
                             </a>
-                            <div class="card-footer bg-white text-center py-2 px-2 border-0">
+                            <div class="card-footer text-center py-2 px-2 border-0">
                                 <small class="text-body-secondary fw-medium">
                                     <i class="bi bi-calendar3 me-1"></i>{{ $item->taken_date }}
                                 </small>

@@ -106,12 +106,12 @@ class DatabaseSeeder extends Seeder
     }
 
     /**
-     *  Fungsi membuat postingan dan menu profile
+     *  Fungsi membuat postingan dan menu profile / sejarah club
      */
     private function postProfile()
     {
         $post = new Post;
-        $post->title = 'Profile';
+        $post->title = 'Sejarah Club';
         $post->description = 'District Tiger Cikarang PLUS adalah organisasi club kendaraan bermotor yang bertempat di kabupaten Bekasi. Seperti yang ada tertera pada Namanya, club ini menjadikan motor tiger sebagai tunggangan utamanya. DTC PLUS memiliki basecamp yang terletak di ruko kuning taman Sentosa dan kantor secretariat yang berada di Kompas tambun. Club ini tergabung dalam wadah Honda Tiger Club Indonesia sejak oktober 2004.
 
 DTC PLUS didirikan dengan tujuan untuk mengumpulkan dan menyatukan anggota serta menyalurkan hobi otomotif, terkhusus para penggemar motor Honda Tiger series. DTC PLUS mengutamakan rasa kekeluargaan, kesetiakawanan, tertib dan disiplin berlalu lintas, serta mematuhi segala macam peraturan dan taat tertib yang berlaku.';
@@ -125,8 +125,8 @@ DTC PLUS didirikan dengan tujuan untuk mengumpulkan dan menyatukan anggota serta
         $menupost = new MenuPost([
             'post_id' => $post->id,
             'slug' => 'profile',
-            'default' => 100,
-            'menu_title' => 'Profile',
+            'default' => 40,
+            'menu_title' => 'Sejarah Club',
             'icons' => null,
         ]);
         $menupost->save();
@@ -135,7 +135,7 @@ DTC PLUS didirikan dengan tujuan untuk mengumpulkan dan menyatukan anggota serta
     private function postStruktur()
     {
         $post = new Post;
-        $post->title = 'Struktur Kepungurusan';
+        $post->title = 'Struktur Kepengurusan';
         $post->description = 'District Tiger Cikarang PLUS memiliki anggota kepungurusan yang masing-masing bertugas untuk membantu setiap anggota dan menjaga lingkungan serta kondisi club diantara anggota.';
         $post->path_featured_image = 'galleries/struktur-anggota.png';
         $post->review();
@@ -143,15 +143,7 @@ DTC PLUS didirikan dengan tujuan untuk mengumpulkan dan menyatukan anggota serta
         $post->user_id = 1;
 
         $post->save();
-
-        $menupost = new MenuPost([
-            'post_id' => $post->id,
-            'slug' => 'struktur',
-            'default' => 200,
-            'menu_title' => 'Struktur',
-            'icons' => null,
-        ]);
-        $menupost->save();
+        // Halaman Struktur pengurus dihapus, disatukan langsung dalam section beranda.
     }
 
     private array $tags = [
