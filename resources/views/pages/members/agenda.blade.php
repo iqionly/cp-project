@@ -25,10 +25,10 @@
             <div class="card card-outline card-primary mb-4 shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h3 class="card-title fw-bold mb-0">
-                        <i class="bi bi-calendar2-week me-2 text-primary"></i>Agenda & Kalender Kegiatan Club
+                        <i class="bi bi-clock-history me-2 text-secondary"></i>Agenda Kegiatan Club
                     </h3>
                     <div class="card-tools">
-                        <span class="badge text-bg-primary">{{ $events->total() }} Total Kegiatan</span>
+                        <span class="badge text-bg-secondary">{{ $events->total() }} Kegiatan Saat Ini</span>
                     </div>
                 </div>
                 <div class="card-body">

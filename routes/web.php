@@ -36,6 +36,7 @@ Route::middleware(['auth'])->prefix('/{context?}')->group(function (Router $rout
     Route::match(['get', 'put', 'post'], '/profile', [ProfileController::class, 'index'])->name('member.profile')->middleware('role:member,admin');
 
     Route::get('/agenda', [AgendaController::class, 'index'])->name('member.agenda')->middleware('role:member,admin');
+    Route::get('/agenda/history', [AgendaController::class, 'history'])->name('member.agenda.history')->middleware('role:member,admin');
     Route::post('/agenda/{event}/register', [AgendaController::class, 'register'])->name('member.agenda.register')->middleware('role:member,admin');
     Route::delete('/agenda/{event}/unregister', [AgendaController::class, 'unregister'])->name('member.agenda.unregister')->middleware('role:member,admin');
 

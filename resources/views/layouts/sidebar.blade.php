@@ -17,11 +17,11 @@
     <!--end::Sidebar Brand-->
     <!--begin::Sidebar Search-->
     <div class="sidebar-search" role="search">
-        <label for="sidebar-search-input" class="visually-hidden">Filter menu</label>
-        <input type="search" id="sidebar-search-input" class="form-control form-control-sm" placeholder="Filter menu…"
+        <label for="sidebar-search-input" class="visually-hidden">Cari menu</label>
+        <input type="search" id="sidebar-search-input" class="form-control form-control-sm" placeholder="Cari menu…"
             autocomplete="off" data-lte-toggle="sidebar-search" data-lte-target="#navigation" />
         <p class="fs-7 text-secondary mt-2 mb-0" data-lte-search-empty role="status" hidden>
-            No matching pages.
+            Tidak ada menu yang sesuai.
         </p>
     </div>
     <!--end::Sidebar Search-->
@@ -46,7 +46,7 @@
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-speedometer"></i>
                             <p>
-                                Master Data
+                                Data Master
                                 <i class="nav-arrow bi bi-chevron-right"></i>
                             </p>
                         </a>
@@ -55,19 +55,19 @@
                                 <a href="{{ route('master-data.member.list') }}"
                                     class="nav-link {{ request()->routeIs('master-data.member.*') ? 'active' : null }}">
                                     <i class="nav-icon bi bi-people"></i>
-                                    <p>Members</p>
+                                    <p>Data Anggota</p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('post.index') }}" class="nav-link {{ request()->routeIs('post.*') ? 'active' : null }}">
                                     <i class="nav-icon bi bi-stickies-fill"></i>
-                                    <p>Posts</p>
+                                    <p>Postingan</p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('event.index') }}" class="nav-link  {{ request()->routeIs('event.*') ? 'active' : null }}">
                                     <i class="nav-icon bi bi-calendar-event-fill"></i>
-                                    <p>Events</p>
+                                    <p>Kegiatan & Acara</p>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -79,14 +79,14 @@
                             <li class="nav-item">
                                 <a href="{{ route('gallery.index') }}" class="nav-link {{ request()->routeIs('gallery.*') ? 'active' : null }}">
                                     <i class="nav-icon bi bi-images"></i>
-                                    <p>Documentation</p>
+                                    <p>Dokumentasi</p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('master-data.user.list') }}"
                                     class="nav-link {{ request()->routeIs('master-data.user.*') ? 'active' : null }}">
                                     <i class="nav-icon bi bi-people"></i>
-                                    <p>Users</p>
+                                    <p>Data Pengguna</p>
                                 </a>
                             </li>
                         </ul>
@@ -97,19 +97,25 @@
                     <li class="nav-item">
                         <a href="{{ route('member.profile') }}" class="nav-link  {{ request()->routeIs('member.profile*') ? 'active' : null }}">
                             <i class="nav-icon bi bi-person-circle"></i>
-                            <p>My Profile</p>
+                            <p>Profil Saya</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('member.agenda') }}" class="nav-link  {{ request()->routeIs('member.agenda*') ? 'active' : null }}">
+                        <a href="{{ route('member.agenda') }}" class="nav-link  {{ request()->routeIs('member.agenda') ? 'active' : null }}">
                             <i class="nav-icon bi bi-calendar2-week"></i>
                             <p>Agenda Kegiatan</p>
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a href="{{ route('member.agenda.history') }}" class="nav-link  {{ request()->routeIs('member.agenda.history*') ? 'active' : null }}">
+                            <i class="nav-icon bi bi-clock-history"></i>
+                            <p>Riwayat Agenda</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{{ route('contrib.index') }}" class="nav-link  {{ request()->routeIs('contrib.*') ? 'active' : null }}">
                             <i class="nav-icon bi bi-cash-coin"></i>
-                            <p>Invoices</p>
+                            <p>Tagihan & Iuran</p>
                         </a>
                     </li>
                 @endcan
@@ -119,7 +125,7 @@
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-gear"></i>
                             <p>
-                                Settings
+                                Pengaturan
                                 <i class="nav-arrow bi bi-chevron-right"></i>
                             </p>
                         </a>
@@ -127,13 +133,13 @@
                             <li class="nav-item">
                                 <a href="{{ route('invoice.generate') }}" class="nav-link  {{ request()->routeIs('invoice.generate') ? 'active' : null }}">
                                     <i class="nav-icon bi bi-cash-stack"></i>
-                                    <p>Generate Invoice</p>
+                                    <p>Buat Tagihan</p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('menu-setting.index') }}" class="nav-link  {{ request()->routeIs('menu-setting.*') ? 'active' : null }}">
                                     <i class="nav-icon bi bi-menu-app"></i>
-                                    <p>Menu Setting</p>
+                                    <p>Pengaturan Menu</p>
                                 </a>
                             </li>
                         </ul>

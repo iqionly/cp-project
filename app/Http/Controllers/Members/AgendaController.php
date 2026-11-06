@@ -42,6 +42,42 @@ class AgendaController extends Controller
     }
 
     /**
+     * Display the history of past events for members.
+     */
+    public function history(Request $request): View
+    {
+        $member = $request->user()->member;
+
+        $events = Event::query()
+            ->with(['post', 'registrations.member', 'galleries'])
+            ->withCount('registrations')
+            ->whereHas('post', function ($query) {
+                $query->whereNotNull('published_at');
+            })
+            ->where(function ($query) {
+                $query->where('end_at', '<', date('Y-m-d H:i:s'))
+                    ->orWhere(function ($q) {
+                        $q->whereNull('end_at')
+                            ->where('start_at', '<', date('Y-m-d H:i:s'));
+                    });
+            })
+            ->orderBy('start_at', 'desc')
+            ->paginate(10);
+
+        $myRegisteredEventIds = $member
+            ? EventRegistration::where('member_id', $member->id)->pluck('event_id')->toArray()
+            : [];
+
+        return view('pages.members.agenda_history', [
+            'events' => $events,
+            'myRegisteredEventIds' => $myRegisteredEventIds,
+            'member' => $member,
+            'page_title' => 'Riwayat Agenda Kegiatan',
+            'page_breadcumb' => ['Member', 'Riwayat Agenda'],
+        ]);
+    }
+
+    /**
      * Register the authenticated member for an event.
      */
     public function register(Request $request, Event $event): RedirectResponse
