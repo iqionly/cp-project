@@ -24,7 +24,7 @@ class AgendaController extends Controller
             ->whereHas('post', function ($query) {
                 $query->whereNotNull('published_at');
             })
-            ->where('start_at', '>=', date('Y-m-d H:i:s'))
+            ->where('end_at', '>=', date('Y-m-d H:i:s'))
             ->orderBy('start_at', 'asc')
             ->paginate(10);
 
