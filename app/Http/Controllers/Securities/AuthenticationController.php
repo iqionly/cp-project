@@ -10,6 +10,16 @@ class AuthenticationController extends Controller
 {
     public function login_page(Request $request)
     {
+        if(Auth::check()) {
+            $user = Auth::user();
+            $role = $user->roles->first();
+
+            if(!$user->isProfileComplete() && $request->attributes->get('context') != 'admin' && !$user->roles()->where('role_grouping', 'admin')->exists()) {
+                return redirect(route('member.profile', ['context' => $role->role_grouping]))->with('warning', 'Please complete your details info (email, address, and member information) to continue.');
+            }
+
+            return redirect()->to('/' . $role->role_grouping . '/home');
+        }
         return view('securities.page_login');
     }
 
@@ -32,8 +42,12 @@ class AuthenticationController extends Controller
 
         if ($user = Auth::attempt($credentials, $request->get('remember'))) {
             $request->session()->regenerate();
+            $user = Auth::user();
+            $role = $user->roles->first();
 
-            $role = Auth::user()->roles->first();
+            if(!$user->isProfileComplete() && $request->attributes->get('context') != 'admin' && !$user->roles()->where('role_grouping', 'admin')->exists()) {
+                return redirect(route('member.profile', ['context' => $role->role_grouping]))->with('warning', 'Please complete your details info (email, address, and member information) to continue.');
+            }
 
             return redirect()->intended('/'.$role->role_grouping.'/home');
         }

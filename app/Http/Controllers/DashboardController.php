@@ -19,7 +19,7 @@ class DashboardController extends Controller
             return redirect()->route('home', ['context' => $context->role_grouping]);
         }
 
-        if ($user && $user->roles()->where('role_grouping', 'member')->exists() && ! $user->isProfileComplete()) {
+        if ($user && $user->roles()->where('role_grouping', 'member')->exists() && ! $user->isProfileComplete() && $request->attributes->get('context') != 'admin') {
             return redirect()->route('member.profile')
                 ->with('warning', 'Please complete your details info (email, address, and member information) to continue.');
         }
