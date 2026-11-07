@@ -36,9 +36,6 @@ class EventController extends Controller
 
         $rawEndAt = $event->getRawOriginal('end_at');
         $rawStartAt = $event->getRawOriginal('start_at');
-        if ($rawEndAt < now() && $rawStartAt < now()) {
-            abort(404);
-        }
 
         $allEvents = $this->getActiveAndUpcomingEvents();
 
